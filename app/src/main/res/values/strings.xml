@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">STRONGR</string>
     <string name="button_addClient">Add Client</string>
-    <string name="hint_clientName">Client Name</string>
+    <string name="hint_clientFirstName">First Name</string>
+    <string name="hint_clientLastName">Last Name</string>
+    <string name="hint_sex">Sex</string>
+    <string name="hint_height">Height (cm)</string>
+    <string name="hint_weight">Weight (kg)</string>
+    <string name="hint_phoneNumber">Phone Number</string>
+    <string name="hint_emailAddress">Email Address</string>
+    <string name="hint_datePicker">Date Picker TODO</string>
+    <string name="hint_clientSex">Sex</string>
+    <string name="hint_clientPhoneNumber">Phone Number</string>
+    <string name="hint_clientEmailAddress">Email Address</string>
 </resources>
