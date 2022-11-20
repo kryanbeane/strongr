@@ -1,4 +1,4 @@
-package kryanbeane.strongr
+package com.strongr
 
 import org.junit.Test
 
