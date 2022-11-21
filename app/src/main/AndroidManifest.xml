@@ -12,7 +12,7 @@
         android:theme="@style/Theme.Strongr"
         tools:targetApi="31">
         <activity
-            android:name=".activities.ClientActivity"
+            android:name=".activities.TraineeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
