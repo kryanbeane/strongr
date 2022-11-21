@@ -8,4 +8,7 @@
     <string name="hint_phoneNumber">Phone Number</string>
     <string name="hint_emailAddress">Email Address</string>
     <string name="hint_datePicker">Date of Birth</string>
+    <string name="hint_password">Password</string>
+    <string name="signUpMessage"><b>Sign Up for STRONGR</b></string>
+    <string name="slogan">Create an account, create custom trackable workouts, achieve your fitness goals, and more.</string>
 </resources>
