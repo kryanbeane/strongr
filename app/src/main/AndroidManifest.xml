@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Strongr"
         tools:targetApi="31">
+
         <activity
             android:name=".activities.CreateAccountActivity"
             android:exported="true">
@@ -20,6 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.WorkoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
