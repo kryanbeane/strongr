@@ -7,7 +7,6 @@ import kotlin.collections.ArrayList
 // As they use the app they can then populate the app with workouts and track their body weight etc.
 // Will maybe add calorie tracking integration from another app like MacroFactor / MyFitness Pal
 data class TraineeModel(
-    var _id: UUID = UUID.randomUUID(),
     var fullName: String = "",
     var dob: Date = Date(),
     var sex: Enum<Sex> = Sex.Male,

@@ -10,8 +10,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
+import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityLoginBinding
 import timber.log.Timber.i
 
@@ -19,20 +22,27 @@ class LoginActivity: AppCompatActivity() {
     // Used to bind this logic to the layout - activity_trainee.xml
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private lateinit var dbController: FirebaseController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Firebase.initialize(this)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         auth = Firebase.auth
+        db = Firebase.firestore
+        dbController = FirebaseController()
 
         Timber.plant(Timber.DebugTree())
         i("Trainee Activity Started Successfully...")
 
 
-
         binding.signUp.setOnClickListener() {
+            val emailAddress = binding.emailAddress.text.toString()
+            Toast.makeText(this, "Signing Up... with email $emailAddress", Toast.LENGTH_SHORT).show()
+            dbController.addTrainee(emailAddress)
             signUp(binding.emailAddress.text.toString(), binding.password.text.toString())
         }
 
@@ -100,6 +110,5 @@ class LoginActivity: AppCompatActivity() {
                 }
             }
     }
-
 
 }
