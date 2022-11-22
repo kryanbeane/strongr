@@ -13,7 +13,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".activities.CreateAccountActivity"
+            android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,9 +24,8 @@
         <activity
             android:name=".activities.WorkoutActivity"
             android:exported="false" />
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value=""/>
     </application>
-
 </manifest>
