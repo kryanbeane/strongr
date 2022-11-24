@@ -2,13 +2,16 @@ package com.strongr.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.github.ajalt.timberkt.Timber
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -16,7 +19,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityLoginBinding
-import timber.log.Timber.i
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
+import kotlin.math.sign
 
 class LoginActivity: AppCompatActivity() {
     // Used to bind this logic to the layout - activity_trainee.xml
@@ -24,29 +29,28 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var dbController: FirebaseController
-
+    private val tag = "LOGIN ACTIVITY"
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Initialize view
         super.onCreate(savedInstanceState)
-        Firebase.initialize(this)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Firebase stuff
+        Firebase.initialize(this)
         auth = Firebase.auth
         db = Firebase.firestore
         dbController = FirebaseController()
 
-        Timber.plant(Timber.DebugTree())
-        i("Trainee Activity Started Successfully...")
+        binding.signUp.setOnClickListener {
+            // Sign up user with email and password
+            completeSignUpFlow(binding.emailAddress.text.toString())
 
-
-        binding.signUp.setOnClickListener() {
-            val emailAddress = binding.emailAddress.text.toString()
-            Toast.makeText(this, "Signing Up... with email $emailAddress", Toast.LENGTH_SHORT).show()
-            dbController.addTrainee(emailAddress)
-            signUp(binding.emailAddress.text.toString(), binding.password.text.toString())
+            // Switch to the workout activity
+            startActivity(Intent(this, WorkoutActivity::class.java))
         }
 
-        binding.signIn.setOnClickListener() {
+        binding.signIn.setOnClickListener {
             signIn(binding.emailAddress.text.toString(), binding.password.text.toString())
         }
     }
@@ -66,8 +70,7 @@ class LoginActivity: AppCompatActivity() {
             .addOnCompleteListener(this) { result ->
                 if (result.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    i("Welcome to Strongr ${auth.currentUser?.email}")
-                    val user = auth.currentUser
+                    Log.d(tag, "signInWithEmail:success")
                     val switchActivityIntent = Intent(this, WorkoutActivity::class.java)
                     startActivity(switchActivityIntent)
                 }
@@ -77,17 +80,13 @@ class LoginActivity: AppCompatActivity() {
             }
     }
 
-    private fun signUp(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
+    private suspend fun signUp(email: String, password: String): AuthResult {
+        // Return the auth result but use await() in coroutine to wait for successful creation
+        return auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { result ->
                 if (result.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    i("Welcome to Strongr ${auth.currentUser?.email}")
-                    val user = auth.currentUser
-                    val switchActivityIntent = Intent(this, WorkoutActivity::class.java)
-                    startActivity(switchActivityIntent)
-                }
-                else {
+                    Toast.makeText(this, "Welcome $email!", Toast.LENGTH_SHORT).show()
+                } else {
                     when (result.exception!!.javaClass) {
                         // If the user enters an email address that is already in use
                         FirebaseAuthUserCollisionException::class.java -> {
@@ -104,11 +103,21 @@ class LoginActivity: AppCompatActivity() {
                         // Some other arbitrary exception
                         else -> {
                             Toast.makeText(this, result.exception!!.message, Toast.LENGTH_SHORT).show()
-                            i(result.exception)
+                            Log.d(tag, "createUserWithEmail:failure", result.exception)
                         }
                     }
                 }
-            }
+            }.await()
+    }
+
+    private fun completeSignUpFlow(emailAddress: String) = runBlocking {
+        val user = signUp(emailAddress, binding.password.text.toString()).user
+
+        if (user != null) {
+            dbController.createTrainee(emailAddress, user.uid)
+        } else {
+            Log.d(tag, "User is null")
+        }
     }
 
 }

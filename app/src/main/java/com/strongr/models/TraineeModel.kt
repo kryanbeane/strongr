@@ -7,9 +7,14 @@ import kotlin.collections.ArrayList
 // As they use the app they can then populate the app with workouts and track their body weight etc.
 // Will maybe add calorie tracking integration from another app like MacroFactor / MyFitness Pal
 data class TraineeModel(
+    // Auto-generated ID by firebase used to get documents from the db
+    // Is assigned after signup or signin
+    var id: String = "",
     var fullName: String = "",
     var dob: Date = Date(),
     var sex: Enum<Sex> = Sex.Male,
+    var workoutsPerWeek: WorkoutsPerWeek = WorkoutsPerWeek.Two,
+    val activityLevel: ActivityLevel = ActivityLevel.ModeratelyActive,
     var height: Float = 0.0f,
     var weight: ArrayList<WeightModel> = arrayListOf(),
     var emailAddress: String,
@@ -20,6 +25,23 @@ data class WeightModel(
     var weight: Float,
     var date: Date
 )
+
+enum class ActivityLevel {
+    Sedentary,
+    LightlyActive,
+    ModeratelyActive,
+    VeryActive,
+    ExtremelyActive
+}
+
+enum class WorkoutsPerWeek {
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven
+}
 
 enum class Sex {
     Male, Female
