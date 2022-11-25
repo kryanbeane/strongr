@@ -7,10 +7,12 @@ import com.strongr.models.WorkoutModel
 
 class MainApp: Application() {
     private val tag = "MAIN_APP"
-    var trainee = TraineeModel(emailAddress = "")
+    lateinit var trainee: TraineeModel
 
     override fun onCreate() {
         super.onCreate()
         Log.d(tag, "MainApp started")
+
+        trainee = TraineeModel(emailAddress = "")
     }
 }

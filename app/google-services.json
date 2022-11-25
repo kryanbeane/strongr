@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:765997696093:android:39d82a869d995ece3639b4",
+        "mobilesdk_app_id": "1:765997696093:android:2cc61e1f160d28683639b4",
         "android_client_info": {
           "package_name": "com.strongr"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "765997696093-mh7g6h5qk38b5ihk7vgkk7dcgq3uhs54.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.strongr",
+            "certificate_hash": "8e48427909fa50779f46da2292815ae312c85486"
+          }
+        },
         {
           "client_id": "765997696093-o6l3qiaoevmrv05jm7su9qh785oq2215.apps.googleusercontent.com",
           "client_type": 3

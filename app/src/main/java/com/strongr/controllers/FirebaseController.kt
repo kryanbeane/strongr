@@ -11,67 +11,61 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.strongr.models.TraineeModel
 import com.strongr.models.WorkoutModel
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.w3c.dom.Document
+import java.lang.Exception
 
 class FirebaseController {
     private val db = Firebase.firestore
-    private lateinit var currentTrainee: TraineeModel
-    private lateinit var traineeDocRef: DocumentReference
 
     companion object {
         private var tag = "FIREBASE_CONTROLLER"
         private var collectionName = "trainees"
     }
 
-    fun getTraineeByEmail(email: String) {
+    fun getTraineeByEmail(email: String): TraineeModel? {
+        var traineeModel: TraineeModel? = null
+
         db.collection(collectionName)
             .whereEqualTo("emailAddress", email)
             .get()
             .addOnSuccessListener {
-                currentTrainee = it.documents[0].toObject<TraineeModel>()!!
-                traineeDocRef = it.documents[0].reference
+                traineeModel = it.documents[0].toObject<TraineeModel>()
             }
             .addOnFailureListener {
-                Log.d(tag, "Error getting documents: ", it)
+                Log.d(tag, "error getting documents: ", it)
             }
+        return traineeModel
     }
 
-    fun createTrainee(emailAddress: String, userUid: String) {
-        // Init new trainee obj
-        val trainee = TraineeModel(emailAddress = emailAddress, id = userUid)
-        // Set the doc ref to a document with the new id
-        traineeDocRef = db.collection(collectionName).document(userUid)
-
-        // Set the document in db to that document and populate with the trainee obj
-        traineeDocRef.set(trainee)
-            .addOnSuccessListener { _ ->
-                Log.d(tag, "DocumentSnapshot added with ID: $userUid")
-                // Update the current trainee ref & id
-                currentTrainee = trainee
-                currentTrainee.id = userUid
-            }
-            .addOnFailureListener {e ->
-                Log.d(tag, "Error adding document", e)
-            }
-    }
-
-    fun createTraineeRevised(emailAddress: String, userUid: String): Pair<TraineeModel?, FirebaseException?> {
-        lateinit var returnPair: Pair<TraineeModel?, FirebaseException?>
-
-        if (emailAddress == "" || userUid == "") {
-            returnPair = Pair(null, FirebaseException("trainee must have an email and id"))
-        } else {
-            val trainee = TraineeModel(emailAddress=emailAddress, id=userUid)
-            returnPair = Pair(trainee, null)
+    fun createTraineeRevised(trainee: TraineeModel): Exception? {
+        var exception: Exception? = null
+        if (trainee.emailAddress.isNotEmpty() && trainee.id.isNotEmpty()) {
+//            db.collection(collectionName).add(trainee)
+//                .addOnSuccessListener { Log.d(tag, "DocumentSnapshot successfully written!") }
+//                .addOnFailureListener { exception = it }
 
             db.collection(collectionName)
-                .document(userUid)
+                .document(trainee.id)
                 .set(trainee)
-                .addOnSuccessListener { returnPair = Pair(trainee, null) }
-                .addOnFailureListener {e -> returnPair = Pair(null, FirebaseException("failed to create trainee", e)) }
+                .addOnSuccessListener { Log.d(tag, "DocumentSnapshot successfully written!") }
+                .addOnFailureListener { exception = it }
         }
+        return exception
+    }
 
-        return returnPair
+    fun createWorkoutRevised(name: String, trainee: TraineeModel): TraineeModel? {
+        var updatedTrainee: TraineeModel? = trainee
+        val workout = WorkoutModel(name)
+
+        db.collection(collectionName)
+            .document(trainee.id)
+            .update("workouts", FieldValue.arrayUnion(workout))
+            .addOnSuccessListener { updatedTrainee!!.workouts.add(workout) }
+            .addOnFailureListener { updatedTrainee = null }
+
+        return updatedTrainee
     }
 
     fun addWorkout(workoutName: String, trainee: TraineeModel) {
@@ -81,38 +75,37 @@ class FirebaseController {
             .update("workouts", FieldValue.arrayUnion(workout))
             .addOnSuccessListener {
                 trainee.workouts.add(workout)
-                Log.d(tag, "DocumentSnapshot successfully updated!")
             }
             .addOnFailureListener { e -> Log.w(tag, "Error updating document", e) }
     }
 
-    fun getWorkouts() {
+    fun getTraineeDBReference(email: String?, id: String?): DocumentReference? {
+        var docRef: DocumentReference? = null
 
-    }
-
-    fun getTraineeDBReference(email: String?, id: String?): Pair<DocumentReference?, FirebaseException?> {
-        lateinit var returnPair: Pair<DocumentReference?, FirebaseException?>
-
-        // Check one parameter is valid
-        if (email == null && id == null) {
-            returnPair = Pair(null, FirebaseException("email and id cannot both be null"))
-        }
-        // If not searching by id
-        else if(email != null) {
+        if(email != null) {
             db.collection(collectionName)
                 .whereEqualTo("emailAddress", email).get()
-                .addOnSuccessListener { returnPair = Pair(it.documents[0].reference, null) }
-                .addOnFailureListener { returnPair = Pair(null, FirebaseException("error getting document with email $email")) }
-        // If not searching by email
+                .addOnSuccessListener { docRef =it.documents[0].reference }
+                .addOnFailureListener { docRef = null }
         } else if (id != null) {
             db.collection(collectionName).document(id).get()
-                .addOnSuccessListener { returnPair = Pair(it.reference, null) }
-                .addOnFailureListener { returnPair = Pair(null, FirebaseException("error getting document with id $id")) }
-        } else {
-            returnPair = Pair(null, FirebaseException("unexpected error getting document, email $email, id $id"))
+                .addOnSuccessListener { docRef = it.reference }
+                .addOnFailureListener { docRef = null }
         }
 
-        return returnPair
+        return docRef
     }
+
+    fun getTrainee(id: String): TraineeModel? = runBlocking {
+        var trainee: TraineeModel? = null
+
+        if (id.isNotEmpty()) {
+            val task = db.collection(collectionName).document(id).get().await()
+            trainee = task.toObject<TraineeModel>()
+        }
+
+        return@runBlocking trainee
+    }
+
 
 }

@@ -11,31 +11,44 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.strongr.R
+import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityWorkoutListBinding
 import com.strongr.databinding.CardWorkoutBinding
 import com.strongr.main.MainApp
+import com.strongr.models.TraineeModel
 import com.strongr.models.WorkoutModel
 
 class WorkoutListActivity: AppCompatActivity() {
 
     private lateinit var app: MainApp
     private lateinit var binding: ActivityWorkoutListBinding
+    private lateinit var firebaseController: FirebaseController
+    var trainee = TraineeModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         app = application as MainApp
+        firebaseController = FirebaseController()
+
+        if (intent.hasExtra("trainee")) {
+            trainee = intent.extras?.getParcelable("trainee")!!
+        }
+
 
         binding.toolbar.title = title
         setSupportActionBar(binding.toolbar)
 
-        val layoutManager = LinearLayoutManager(this)
 
+        val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = WorkoutAdapter(app.trainee.workouts)
+        binding.recyclerView.adapter = WorkoutAdapter(trainee.workouts)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -55,7 +68,7 @@ class WorkoutListActivity: AppCompatActivity() {
 
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, app.trainee.workouts.size)
+                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, trainee.workouts.size)
             }
         }
 }
