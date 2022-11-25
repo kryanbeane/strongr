@@ -15,4 +15,5 @@
     <string name="workout_name">Workout Name</string>
     <string name="create_workout">Create Workout</string>
     <string name="select_muscle_groups">Select Muscle Groups</string>
+    <string name="createWorkout">Create</string>
 </resources>

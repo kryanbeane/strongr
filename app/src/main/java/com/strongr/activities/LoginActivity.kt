@@ -19,6 +19,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityLoginBinding
+import com.strongr.main.MainApp
+import com.strongr.models.TraineeModel
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlin.math.sign
@@ -29,7 +31,10 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var dbController: FirebaseController
-    private val tag = "LOGIN ACTIVITY"
+    private lateinit var app: MainApp
+    private val tag = "LOGIN_ACTIVITY"
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Initialize view
         super.onCreate(savedInstanceState)
@@ -42,12 +47,14 @@ class LoginActivity: AppCompatActivity() {
         db = Firebase.firestore
         dbController = FirebaseController()
 
+        app = application as MainApp
+
         binding.signUp.setOnClickListener {
             // Sign up user with email and password
             completeSignUpFlow(binding.emailAddress.text.toString())
 
             // Switch to the workout activity
-            startActivity(Intent(this, WorkoutActivity::class.java))
+            startActivity(Intent(this, WorkoutListActivity::class.java))
         }
 
         binding.signIn.setOnClickListener {
@@ -60,7 +67,7 @@ class LoginActivity: AppCompatActivity() {
         val currentUser = auth.currentUser
         if(currentUser != null){
             // Open workout activity
-            val intent = Intent(this, WorkoutActivity::class.java)
+            val intent = Intent(this, WorkoutListActivity::class.java)
             startActivity(intent)
         }
     }
@@ -110,13 +117,21 @@ class LoginActivity: AppCompatActivity() {
             }.await()
     }
 
-    private fun completeSignUpFlow(emailAddress: String) = runBlocking {
+    private fun completeSignUpFlow(emailAddress: String): Any = runBlocking {
         val user = signUp(emailAddress, binding.password.text.toString()).user
 
         if (user != null) {
-            dbController.createTrainee(emailAddress, user.uid)
+            val returnPair = dbController.createTraineeRevised(emailAddress, user.uid)
+
+            if (returnPair.first != null) {
+                app.trainee = returnPair.first!!
+            } else {
+                Log.d(tag, "failed to create user ${returnPair.second}")
+
+            }
+
         } else {
-            Log.d(tag, "User is null")
+            Log.d(tag, "user is null")
         }
     }
 

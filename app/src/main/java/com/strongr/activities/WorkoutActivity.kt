@@ -12,36 +12,42 @@ import com.google.firebase.auth.FirebaseAuth
 import com.strongr.R
 import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityWorkoutBinding
+import com.strongr.main.MainApp
+import com.strongr.models.WorkoutModel
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class WorkoutActivity : AppCompatActivity() {
+class WorkoutActivity: AppCompatActivity() {
     private lateinit var binding: ActivityWorkoutBinding
     private lateinit var dbController: FirebaseController
-    private val tag = "WORKOUT ACTIVITY"
+    private lateinit var app: MainApp
+    private var workout = WorkoutModel("")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         dbController = FirebaseController()
 
+        app = application as MainApp
 
-        binding.createWorkout.setOnClickListener {
-            Snackbar.make(binding.root, "Workout created ${FirebaseAuth.getInstance().currentUser.toString()}", Snackbar.LENGTH_LONG).show()
-            dbController.addWorkout(binding.workoutName.text.toString())
-            Log.d(tag, "Workout added")
+
+        binding.createWorkout.setOnClickListener() {
+            workout.name = binding.workoutName.text.toString()
+            if (workout.name.isNotEmpty()) {
+                dbController.addWorkout(binding.workoutName.text.toString(), app.trainee)
+
+                setResult(RESULT_OK)
+                finish()
+            } else {
+                Snackbar.make(it,"Please Enter a name", Snackbar.LENGTH_LONG)
+                    .show()
+            }
         }
+    }
 
-
-
-//        binding.logOut.setOnClickListener {
-//            Firebase.auth.signOut()
-//
-//            val intent = Intent(this, LoginActivity::class.java)
-//            startActivity(intent)
-//            Timber.tag("Workout Activity").d("User logged out")
-//        }
-
+    companion object {
+        private const val tag = "WORKOUT_ACTIVITY"
     }
 }
