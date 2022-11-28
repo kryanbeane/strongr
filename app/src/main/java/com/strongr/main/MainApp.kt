@@ -2,8 +2,7 @@ package com.strongr.main
 
 import android.app.Application
 import android.util.Log
-import com.strongr.models.TraineeModel
-import com.strongr.models.WorkoutModel
+import com.strongr.models.trainee.TraineeModel
 
 class MainApp: Application() {
     private val tag = "MAIN_APP"

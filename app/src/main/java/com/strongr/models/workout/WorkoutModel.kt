@@ -1,9 +1,8 @@
-package com.strongr.models
+package com.strongr.models.workout
 
 import android.os.Parcelable
+import com.strongr.models.exercise.ExerciseModel
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
-import java.util.*
 import kotlin.collections.ArrayList
 
 @Parcelize

@@ -1,6 +1,5 @@
 package com.strongr.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,9 +9,8 @@ import com.strongr.R
 import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityWorkoutBinding
 import com.strongr.main.MainApp
-import com.strongr.models.TraineeModel
-import com.strongr.models.WorkoutModel
-import com.strongr.utils.parcelizeIntent
+import com.strongr.models.trainee.TraineeModel
+import com.strongr.models.workout.WorkoutModel
 
 class WorkoutActivity: AppCompatActivity() {
     private lateinit var binding: ActivityWorkoutBinding

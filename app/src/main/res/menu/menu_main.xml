@@ -7,4 +7,9 @@
         android:icon="@drawable/baseline_library_add_24"
         android:title="@string/createWorkout"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/baseline_logout_24"
+        android:title="@string/logout"
+        app:showAsAction="always" />
 </menu>

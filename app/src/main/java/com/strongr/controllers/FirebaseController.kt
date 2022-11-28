@@ -1,19 +1,16 @@
 package com.strongr.controllers
 
 import android.util.Log
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.strongr.models.TraineeModel
-import com.strongr.models.WorkoutModel
+import com.strongr.models.trainee.TraineeModel
+import com.strongr.models.workout.WorkoutModel
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import org.w3c.dom.Document
 import java.lang.Exception
 
 class FirebaseController {
@@ -21,7 +18,7 @@ class FirebaseController {
 
     companion object {
         private var tag = "FIREBASE_CONTROLLER"
-        private var collectionName = "trainees"
+        var collectionName = "trainees"
     }
 
     fun getTraineeByEmail(email: String): TraineeModel? {

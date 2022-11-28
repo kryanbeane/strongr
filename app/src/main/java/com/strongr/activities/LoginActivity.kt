@@ -19,7 +19,7 @@ import com.google.firebase.ktx.initialize
 import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityLoginBinding
 import com.strongr.main.MainApp
-import com.strongr.models.TraineeModel
+import com.strongr.models.trainee.TraineeModel
 import com.strongr.utils.parcelizeIntent
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await

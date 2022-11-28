@@ -17,4 +17,5 @@
     <string name="select_muscle_groups">Select Muscle Groups</string>
     <string name="createWorkout">Create</string>
     <string name="cancel">Cancel</string>
+    <string name="logout">logout</string>
 </resources>

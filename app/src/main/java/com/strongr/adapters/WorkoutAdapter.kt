@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.strongr.databinding.CardWorkoutBinding
-import com.strongr.models.WorkoutModel
+import com.strongr.models.workout.WorkoutModel
 
 
 class WorkoutAdapter constructor(private var workouts: List<WorkoutModel>) :

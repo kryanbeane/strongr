@@ -1,6 +1,8 @@
-package com.strongr.models
+package com.strongr.models.trainee
 
 import android.os.Parcelable
+import com.strongr.models.weight.WeightModel
+import com.strongr.models.workout.WorkoutModel
 import kotlinx.parcelize.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
@@ -24,9 +26,4 @@ data class TraineeModel (
     var workouts: ArrayList<WorkoutModel> = arrayListOf()
 ): Parcelable
 
-@Parcelize
 
-data class WeightModel (
-    var weight: Float,
-    var date: Date
-): Parcelable
