@@ -1,6 +1,5 @@
 package com.strongr.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +23,6 @@ import com.strongr.models.TraineeModel
 import com.strongr.utils.parcelizeIntent
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import kotlin.math.sign
 
 class LoginActivity: AppCompatActivity() {
     // Used to bind this logic to the layout - activity_trainee.xml
@@ -68,10 +66,11 @@ class LoginActivity: AppCompatActivity() {
         if (currentUser != null && currentUser.uid.isNotEmpty()) {
 
             val trainee = dbController.getTrainee(currentUser.uid)
-
             if (trainee != null) {
+                app.trainee = trainee
                 Toast.makeText(baseContext, "Welcome back ${trainee.fullName}", Toast.LENGTH_SHORT).show()
-                startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
+                startActivity(Intent(this, WorkoutListActivity::class.java))
+                //startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
                 finish()
 
             } else {
@@ -91,6 +90,7 @@ class LoginActivity: AppCompatActivity() {
 
                     val trainee = dbController.getTrainee(auth.currentUser!!.uid)
                     if (trainee != null) {
+                        app.trainee = trainee
                         startActivity(parcelizeIntent(this, WorkoutListActivity(), "trainee", trainee))
                         finish()
                     }
@@ -139,6 +139,7 @@ class LoginActivity: AppCompatActivity() {
             val exception = dbController.createTraineeRevised(trainee)
 
             if (exception == null) {
+                app.trainee = trainee
                 startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
                 finish()
             } else {

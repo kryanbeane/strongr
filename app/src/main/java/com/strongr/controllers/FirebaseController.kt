@@ -68,13 +68,12 @@ class FirebaseController {
         return updatedTrainee
     }
 
-    fun addWorkout(workoutName: String, trainee: TraineeModel) {
+    fun addWorkout(workoutName: String) {
         val workout = WorkoutModel(name = workoutName)
 
         db.collection(collectionName).document(FirebaseAuth.getInstance().currentUser!!.uid)
             .update("workouts", FieldValue.arrayUnion(workout))
             .addOnSuccessListener {
-                trainee.workouts.add(workout)
             }
             .addOnFailureListener { e -> Log.w(tag, "Error updating document", e) }
     }

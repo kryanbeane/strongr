@@ -1,18 +1,16 @@
 package com.strongr.activities
 
 import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.strongr.R
 import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityWorkoutListBinding
@@ -20,6 +18,7 @@ import com.strongr.databinding.CardWorkoutBinding
 import com.strongr.main.MainApp
 import com.strongr.models.TraineeModel
 import com.strongr.models.WorkoutModel
+import com.strongr.utils.parcelizeIntent
 
 class WorkoutListActivity: AppCompatActivity() {
 
@@ -37,10 +36,11 @@ class WorkoutListActivity: AppCompatActivity() {
         app = application as MainApp
         firebaseController = FirebaseController()
 
-        if (intent.hasExtra("trainee")) {
-            trainee = intent.extras?.getParcelable("trainee")!!
-        }
+        trainee = app.trainee
 
+//        if (intent.hasExtra("trainee")) {
+//            trainee = intent.extras?.getParcelable("trainee")!!
+//        }
 
         binding.toolbar.title = title
         setSupportActionBar(binding.toolbar)
@@ -59,8 +59,7 @@ class WorkoutListActivity: AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.workout_add -> {
-                val launcherIntent = Intent(this, WorkoutActivity::class.java)
-                getResult.launch(launcherIntent)
+                getResult.launch(parcelizeIntent(this, WorkoutActivity(), "trainee", trainee))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -69,6 +68,7 @@ class WorkoutListActivity: AppCompatActivity() {
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
                 (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, trainee.workouts.size)
+                trainee = it.data?.extras?.getParcelable("trainee")!!
             }
         }
 }
