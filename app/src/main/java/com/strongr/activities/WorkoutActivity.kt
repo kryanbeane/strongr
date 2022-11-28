@@ -2,8 +2,11 @@ package com.strongr.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import com.strongr.R
 import com.strongr.controllers.FirebaseController
 import com.strongr.databinding.ActivityWorkoutBinding
 import com.strongr.main.MainApp
@@ -27,6 +30,9 @@ class WorkoutActivity: AppCompatActivity() {
         app = application as MainApp
         trainee = app.trainee
 
+        binding.toolbarAdd.title = title
+        setSupportActionBar(binding.toolbarAdd)
+
         binding.createWorkout.setOnClickListener {
 
             if (binding.workoutName.text.toString().isNotEmpty()) {
@@ -42,6 +48,20 @@ class WorkoutActivity: AppCompatActivity() {
                 Snackbar.make(it,"Please Enter a name", Snackbar.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_workout, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.item_cancel -> {
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {

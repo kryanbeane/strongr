@@ -16,4 +16,5 @@
     <string name="create_workout">Create Workout</string>
     <string name="select_muscle_groups">Select Muscle Groups</string>
     <string name="createWorkout">Create</string>
+    <string name="cancel">Cancel</string>
 </resources>
