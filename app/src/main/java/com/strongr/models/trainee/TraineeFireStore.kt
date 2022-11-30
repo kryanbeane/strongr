@@ -1,41 +1,80 @@
 package com.strongr.models.trainee
 
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.strongr.controllers.FirebaseController
+import com.strongr.models.workout.WorkoutFireStore
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 
 class TraineeFireStore: TraineeStore {
+    var currentTrainee = TraineeModel()
     private val db = Firebase.firestore
+    private val collectionName = "trainees"
+    val workouts = WorkoutFireStore()
 
-    override suspend fun create(trainee: TraineeModel): Boolean {
-        var result = false
-
+    override suspend fun create(trainee: TraineeModel) {
         if (trainee.emailAddress.isNotEmpty() && trainee.id.isNotEmpty()) {
-            db.collection(FirebaseController.collectionName)
+            db.collection(collectionName)
                 .document(trainee.id)
-                .set(trainee)
-                .addOnSuccessListener { result = true }.await()
+                .set(trainee).await()
         }
-        return result
     }
 
-    override suspend fun update(trainee: TraineeModel): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun update(trainee: TraineeModel) {
+        if (validUserDetails(trainee)) {
+            db.collection(collectionName)
+                .document(trainee.id).update(mapOf(
+                    "fullName" to trainee.fullName,
+                    "dob" to trainee.dob,
+                    "sex" to trainee.sex,
+                    "workoutsPerWeek" to trainee.workoutsPerWeek,
+                    "activityLevel" to trainee.activityLevel,
+                    "height" to trainee.height,
+                    "emailAddress" to trainee.emailAddress,
+                )).await()
+        }
     }
 
-    override suspend fun delete(trainee: TraineeModel): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun delete(trainee: TraineeModel, user: FirebaseUser) {
+        // Delete Firebase Document
+        db.collection(collectionName).document(trainee.id).delete().await()
+
+        // Delete Firebase Auth Profile
+        user.delete().await()
     }
 
-    override suspend fun get(id: String): TraineeModel? {
-        TODO("Not yet implemented")
+    override fun get(id: String): TraineeModel? = runBlocking {
+        var trainee: TraineeModel? = null
+
+        if (id.isNotEmpty()) {
+            val snapshot = db.collection(collectionName)
+                .document(id)
+                .get()
+                .await()
+
+            trainee = snapshot.toObject<TraineeModel>()
+        }
+
+        return@runBlocking trainee
     }
 
-    override suspend fun fetchAuthProfile(): FirebaseUser? {
-        TODO("Not yet implemented")
+    override fun fetchAuthProfile(): FirebaseUser? {
+        return Firebase.auth.currentUser
     }
 
+    private fun validUserDetails(trainee: TraineeModel): Boolean {
+        return trainee.emailAddress.isNotEmpty()
+                && trainee.id.isNotEmpty()
+                && trainee.fullName.isNotEmpty()
+                && trainee.dob.before(Date())
+                && trainee.sex.isNotEmpty()
+                && trainee.workoutsPerWeek.isNotEmpty()
+                && trainee.activityLevel.isNotEmpty()
+                && !trainee.height.equals(0.0f)
+    }
 
 }

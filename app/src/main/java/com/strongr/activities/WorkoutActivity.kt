@@ -3,6 +3,7 @@ package com.strongr.activities
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.strongr.R
@@ -11,6 +12,7 @@ import com.strongr.databinding.ActivityWorkoutBinding
 import com.strongr.main.MainApp
 import com.strongr.models.trainee.TraineeModel
 import com.strongr.models.workout.WorkoutModel
+import kotlinx.coroutines.runBlocking
 
 class WorkoutActivity: AppCompatActivity() {
     private lateinit var binding: ActivityWorkoutBinding
@@ -26,7 +28,7 @@ class WorkoutActivity: AppCompatActivity() {
         dbController = FirebaseController()
 
         app = application as MainApp
-        trainee = app.trainee
+        trainee = app.firestore.currentTrainee
 
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
@@ -35,7 +37,8 @@ class WorkoutActivity: AppCompatActivity() {
 
             if (binding.workoutName.text.toString().isNotEmpty()) {
                 workout.name = binding.workoutName.text.toString()
-                dbController.addWorkout(binding.workoutName.text.toString())
+                createWorkout(workout)
+                //app.firestore.workouts.create(workout, app.firestore.currentTrainee)
 
                 trainee.workouts.add(workout)
 
@@ -46,6 +49,10 @@ class WorkoutActivity: AppCompatActivity() {
                 Snackbar.make(it,"Please Enter a name", Snackbar.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun createWorkout(workout: WorkoutModel) = runBlocking {
+        app.firestore.workouts.create(workout, app.firestore.currentTrainee)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

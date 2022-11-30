@@ -39,7 +39,7 @@ class WorkoutListActivity: AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = WorkoutAdapter(app.trainee.workouts)
+        binding.recyclerView.adapter = WorkoutAdapter(app.firestore.currentTrainee.workouts)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -50,7 +50,7 @@ class WorkoutListActivity: AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.workout_add -> {
-                getResult.launch(parcelizeIntent(this, WorkoutActivity(), "trainee", app.trainee))
+                getResult.launch(parcelizeIntent(this, WorkoutActivity(), "trainee", app.firestore.currentTrainee))
             }
             R.id.logout -> {
                 FirebaseAuth.getInstance().signOut()
@@ -63,7 +63,7 @@ class WorkoutListActivity: AppCompatActivity() {
 
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, app.trainee.workouts.size)
+                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, app.firestore.currentTrainee.workouts.size)
             }
         }
 }

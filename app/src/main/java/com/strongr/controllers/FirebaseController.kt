@@ -21,50 +21,6 @@ class FirebaseController {
         var collectionName = "trainees"
     }
 
-    fun getTraineeByEmail(email: String): TraineeModel? {
-        var traineeModel: TraineeModel? = null
-
-        db.collection(collectionName)
-            .whereEqualTo("emailAddress", email)
-            .get()
-            .addOnSuccessListener {
-                traineeModel = it.documents[0].toObject<TraineeModel>()
-            }
-            .addOnFailureListener {
-                Log.d(tag, "error getting documents: ", it)
-            }
-        return traineeModel
-    }
-
-    fun createTraineeRevised(trainee: TraineeModel): Exception? {
-        var exception: Exception? = null
-        if (trainee.emailAddress.isNotEmpty() && trainee.id.isNotEmpty()) {
-//            db.collection(collectionName).add(trainee)
-//                .addOnSuccessListener { Log.d(tag, "DocumentSnapshot successfully written!") }
-//                .addOnFailureListener { exception = it }
-
-            db.collection(collectionName)
-                .document(trainee.id)
-                .set(trainee)
-                .addOnSuccessListener { Log.d(tag, "DocumentSnapshot successfully written!") }
-                .addOnFailureListener { exception = it }
-        }
-        return exception
-    }
-
-    fun createWorkoutRevised(name: String, trainee: TraineeModel): TraineeModel? {
-        var updatedTrainee: TraineeModel? = trainee
-        val workout = WorkoutModel(name)
-
-        db.collection(collectionName)
-            .document(trainee.id)
-            .update("workouts", FieldValue.arrayUnion(workout))
-            .addOnSuccessListener { updatedTrainee!!.workouts.add(workout) }
-            .addOnFailureListener { updatedTrainee = null }
-
-        return updatedTrainee
-    }
-
     fun addWorkout(workoutName: String) {
         val workout = WorkoutModel(name = workoutName)
 
