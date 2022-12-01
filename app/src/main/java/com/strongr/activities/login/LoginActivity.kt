@@ -1,4 +1,4 @@
-package com.strongr.activities
+package com.strongr.activities.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,21 +7,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
-import com.strongr.controllers.FirebaseController
+import com.strongr.activities.workouts.WorkoutListActivity
 import com.strongr.databinding.ActivityLoginBinding
 import com.strongr.main.MainApp
 import com.strongr.models.trainee.TraineeModel
 import com.strongr.utils.parcelizeIntent
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
@@ -30,7 +26,6 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var dbController: FirebaseController
     private lateinit var app: MainApp
     private val tag = "LOGIN_ACTIVITY"
 
@@ -45,7 +40,6 @@ class LoginActivity: AppCompatActivity() {
         Firebase.initialize(this)
         auth = Firebase.auth
         db = Firebase.firestore
-        dbController = FirebaseController()
 
         app = application as MainApp
 

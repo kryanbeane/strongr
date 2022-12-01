@@ -1,4 +1,4 @@
-package com.strongr.activities
+package com.strongr.activities.workouts
 
 import android.app.Activity
 import android.content.Intent
@@ -9,37 +9,34 @@ import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import com.strongr.R
+import com.strongr.activities.login.LoginActivity
+import com.strongr.activities.settings.SettingsActivity
 import com.strongr.adapters.WorkoutAdapter
-import com.strongr.controllers.FirebaseController
+import com.strongr.adapters.WorkoutListener
 import com.strongr.databinding.ActivityWorkoutListBinding
 import com.strongr.main.MainApp
-import com.strongr.models.trainee.TraineeModel
+import com.strongr.models.workout.WorkoutModel
 import com.strongr.utils.parcelizeIntent
 
-class WorkoutListActivity: AppCompatActivity() {
+class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
 
     private lateinit var app: MainApp
     private lateinit var binding: ActivityWorkoutListBinding
-    private lateinit var firebaseController: FirebaseController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         app = application as MainApp
-        firebaseController = FirebaseController()
-
 
         binding.toolbar.title = title
         setSupportActionBar(binding.toolbar)
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = WorkoutAdapter(app.firestore.currentTrainee.workouts)
+        binding.recyclerView.adapter = WorkoutAdapter(app.firestore.currentTrainee.workouts,this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -57,6 +54,9 @@ class WorkoutListActivity: AppCompatActivity() {
                 finish()
                 startActivity(Intent(this, LoginActivity::class.java))
             }
+            R.id.settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -64,6 +64,21 @@ class WorkoutListActivity: AppCompatActivity() {
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
                 (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, app.firestore.currentTrainee.workouts.size)
+            }
+        }
+
+    override fun onWorkoutClick(workout: WorkoutModel) {
+        val launcherIntent = Intent(this, WorkoutActivity::class.java)
+        getClickResult.launch(launcherIntent)
+    }
+
+    private val getClickResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                (binding.recyclerView.adapter)?.
+                notifyItemRangeChanged(0,app.firestore.currentTrainee.workouts.size)
             }
         }
 }
