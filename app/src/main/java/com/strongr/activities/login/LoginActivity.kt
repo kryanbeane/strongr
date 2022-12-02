@@ -1,4 +1,4 @@
-package com.strongr.activities
+package com.strongr.activities.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,19 +7,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
-import com.strongr.controllers.FirebaseController
+import com.strongr.activities.workouts.WorkoutListActivity
 import com.strongr.databinding.ActivityLoginBinding
 import com.strongr.main.MainApp
-import com.strongr.models.TraineeModel
+import com.strongr.models.trainee.TraineeModel
 import com.strongr.utils.parcelizeIntent
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
@@ -29,7 +26,6 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var dbController: FirebaseController
     private lateinit var app: MainApp
     private val tag = "LOGIN_ACTIVITY"
 
@@ -44,7 +40,6 @@ class LoginActivity: AppCompatActivity() {
         Firebase.initialize(this)
         auth = Firebase.auth
         db = Firebase.firestore
-        dbController = FirebaseController()
 
         app = application as MainApp
 
@@ -64,10 +59,9 @@ class LoginActivity: AppCompatActivity() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null && currentUser.uid.isNotEmpty()) {
-
-            val trainee = dbController.getTrainee(currentUser.uid)
+            val trainee = app.firestore.get(currentUser.uid)
             if (trainee != null) {
-                app.trainee = trainee
+                app.firestore.currentTrainee = trainee
                 Toast.makeText(baseContext, "Welcome back ${trainee.fullName}", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, WorkoutListActivity::class.java))
                 //startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
@@ -87,10 +81,9 @@ class LoginActivity: AppCompatActivity() {
             .addOnCompleteListener(this) { result ->
                 if (result.isSuccessful) {
                     Toast.makeText(this@LoginActivity, "Welcome back $email!", Toast.LENGTH_SHORT).show()
-
-                    val trainee = dbController.getTrainee(auth.currentUser!!.uid)
+                    val trainee = app.firestore.get(auth.currentUser!!.uid)
                     if (trainee != null) {
-                        app.trainee = trainee
+                        app.firestore.currentTrainee = trainee
                         startActivity(parcelizeIntent(this, WorkoutListActivity(), "trainee", trainee))
                         finish()
                     }
@@ -102,50 +95,21 @@ class LoginActivity: AppCompatActivity() {
     }
 
     private suspend fun signUp(email: String, password: String): AuthResult {
-        // Return the auth result but use await() in coroutine to wait for successful creation
-        return auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { result ->
-                if (result.isSuccessful) {
-                    Toast.makeText(this, "Welcome $email!", Toast.LENGTH_SHORT).show()
-                } else {
-                    when (result.exception!!.javaClass) {
-                        // If the user enters an email address that is already in use
-                        FirebaseAuthUserCollisionException::class.java -> {
-                            Toast.makeText(this@LoginActivity, "User already exists, try singing in!", Toast.LENGTH_SHORT).show()
-                        }
-                        // If the user enters a weak password
-                        FirebaseAuthWeakPasswordException::class.java -> {
-                            Toast.makeText(this@LoginActivity, "Password is too weak, try a stronger password!", Toast.LENGTH_SHORT).show()
-                        }
-                        // If the user enters an invalid email address
-                        FirebaseAuthInvalidCredentialsException::class.java -> {
-                            Toast.makeText(this@LoginActivity, "Invalid email address, try again!", Toast.LENGTH_SHORT).show()
-                        }
-                        // Some other arbitrary exception
-                        else -> {
-                            Toast.makeText(this@LoginActivity, result.exception!!.message, Toast.LENGTH_SHORT).show()
-                            Log.d(tag, "createUserWithEmail:failure", result.exception)
-                        }
-                    }
-                }
-            }.await()
+        return auth.createUserWithEmailAndPassword(email, password).await()
     }
 
     private fun completeSignUpFlow(emailAddress: String, password: String) = runBlocking {
         val user = signUp(emailAddress, password).user
+        Toast.makeText(this@LoginActivity, "Welcome $user!", Toast.LENGTH_LONG).show()
 
         if (user != null) {
-            val trainee = TraineeModel(emailAddress=emailAddress, id=user.uid)
-            val exception = dbController.createTraineeRevised(trainee)
 
-            if (exception == null) {
-                app.trainee = trainee
-                startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
-                finish()
-            } else {
-                // TODO Clean up any already made accounts to start again - delete auth account if db account wasn't created
-                Toast.makeText(this@LoginActivity, "Error creating trainee $exception", Toast.LENGTH_LONG).show()
-            }
+            val trainee = TraineeModel(emailAddress=emailAddress, id=user.uid)
+             app.firestore.create(trainee)
+
+            app.firestore.currentTrainee = trainee
+            startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
+            finish()
         } else {
             Log.d(tag, "user is null, signup was unsuccessful")
         }

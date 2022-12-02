@@ -1,7 +1,10 @@
-package com.strongr.models
+package com.strongr.models.trainee
 
 import android.os.Parcelable
+import com.strongr.models.weight.WeightModel
+import com.strongr.models.workout.WorkoutModel
 import kotlinx.parcelize.Parcelize
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -9,7 +12,7 @@ import kotlin.collections.ArrayList
 // As they use the app they can then populate the app with workouts and track their body weight etc.
 // Will maybe add calorie tracking integration from another app like MacroFactor / MyFitness Pal
 @Parcelize
-data class TraineeModel (
+data class TraineeModel(
     // Auto-generated ID by firebase used to get documents from the db
     // Is assigned after signup or signin
     var id: String = "",
@@ -24,9 +27,4 @@ data class TraineeModel (
     var workouts: ArrayList<WorkoutModel> = arrayListOf()
 ): Parcelable
 
-@Parcelize
 
-data class WeightModel (
-    var weight: Float,
-    var date: Date
-): Parcelable

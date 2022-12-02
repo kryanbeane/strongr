@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.strongr.activities.WorkoutActivity">
+    tools:context="com.strongr.activities.workouts.WorkoutActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -54,16 +54,14 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/textView"
+                <com.anurag.multiselectionspinner.MultiSpinner
+                    android:id="@+id/multiSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:layout_margin="8dp"
-                    android:background="@android:drawable/editbox_background"
-                    android:drawablePadding="16dp"
-                    android:hint="@string/select_muscle_groups"
-                    android:padding="12dp"
-                    app:drawableRightCompat="@android:drawable/arrow_down_float" />
+                    android:padding="8dp"
+                    android:hint="@string/muscle_group"
+                    />
 
                 <Button
                     android:id="@+id/createWorkout"
