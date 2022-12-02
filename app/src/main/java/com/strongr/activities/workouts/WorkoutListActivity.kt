@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.strongr.R
@@ -17,6 +18,7 @@ import com.strongr.adapters.WorkoutListener
 import com.strongr.databinding.ActivityWorkoutListBinding
 import com.strongr.main.MainApp
 import com.strongr.models.workout.WorkoutModel
+import com.strongr.utils.RearrangeCardHelper
 import com.strongr.utils.parcelizeIntent
 
 class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
@@ -36,7 +38,10 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = WorkoutAdapter(app.firestore.currentTrainee.workouts,this)
+        val adapter = WorkoutAdapter(app.firestore.currentTrainee.workouts,this)
+        binding.recyclerView.adapter = adapter
+        val itemTouchHelper = ItemTouchHelper(RearrangeCardHelper(adapter))
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

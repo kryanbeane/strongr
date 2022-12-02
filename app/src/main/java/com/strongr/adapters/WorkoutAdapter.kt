@@ -10,23 +10,23 @@ import com.strongr.models.workout.WorkoutModel
 class WorkoutAdapter constructor(
     private var workouts: List<WorkoutModel>,
     private val listener: WorkoutListener):
-    RecyclerView.Adapter<WorkoutAdapter.MainHolder>() {
+    RecyclerView.Adapter<WorkoutAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = CardWorkoutBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return MainHolder(binding)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: MainHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val workout = workouts[holder.adapterPosition]
         holder.bind(workout, listener)
     }
 
     override fun getItemCount(): Int = workouts.size
 
-    class MainHolder(private val binding: CardWorkoutBinding):
+    class ViewHolder(private val binding: CardWorkoutBinding):
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(workout: WorkoutModel, listener: WorkoutListener) {
