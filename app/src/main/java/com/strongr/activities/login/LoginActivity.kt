@@ -17,7 +17,7 @@ import com.strongr.activities.workouts.WorkoutListActivity
 import com.strongr.databinding.ActivityLoginBinding
 import com.strongr.main.MainApp
 import com.strongr.models.trainee.TraineeModel
-import com.strongr.utils.parcelizeIntent
+import com.strongr.utils.parcelizeTraineeIntent
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
@@ -59,9 +59,9 @@ class LoginActivity: AppCompatActivity() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null && currentUser.uid.isNotEmpty()) {
-            val trainee = app.firestore.get(currentUser.uid)
+            val trainee = app.traineeFS.get(currentUser.uid)
             if (trainee != null) {
-                app.firestore.currentTrainee = trainee
+                app.traineeFS.currentTrainee = trainee
                 Toast.makeText(baseContext, "Welcome back ${trainee.fullName}", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, WorkoutListActivity::class.java))
                 //startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
@@ -81,10 +81,10 @@ class LoginActivity: AppCompatActivity() {
             .addOnCompleteListener(this) { result ->
                 if (result.isSuccessful) {
                     Toast.makeText(this@LoginActivity, "Welcome back $email!", Toast.LENGTH_SHORT).show()
-                    val trainee = app.firestore.get(auth.currentUser!!.uid)
+                    val trainee = app.traineeFS.get(auth.currentUser!!.uid)
                     if (trainee != null) {
-                        app.firestore.currentTrainee = trainee
-                        startActivity(parcelizeIntent(this, WorkoutListActivity(), "trainee", trainee))
+                        app.traineeFS.currentTrainee = trainee
+                        startActivity(parcelizeTraineeIntent(this, WorkoutListActivity(), "trainee", trainee))
                         finish()
                     }
                 }
@@ -105,10 +105,10 @@ class LoginActivity: AppCompatActivity() {
         if (user != null) {
 
             val trainee = TraineeModel(emailAddress=emailAddress, id=user.uid)
-             app.firestore.create(trainee)
+             app.traineeFS.create(trainee)
 
-            app.firestore.currentTrainee = trainee
-            startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
+            app.traineeFS.currentTrainee = trainee
+            startActivity(parcelizeTraineeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
             finish()
         } else {
             Log.d(tag, "user is null, signup was unsuccessful")

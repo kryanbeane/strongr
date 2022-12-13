@@ -1,4 +1,4 @@
-package com.strongr.adapters
+package com.strongr.activities.workouts.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,9 +7,10 @@ import com.strongr.databinding.CardWorkoutBinding
 import com.strongr.models.workout.WorkoutModel
 
 
-class WorkoutAdapter constructor(
-    private var workouts: List<WorkoutModel>,
-    private val listener: WorkoutListener):
+class WorkoutAdapter(
+    private var workouts: MutableMap<String, WorkoutModel>,
+    private val listener: WorkoutListener
+):
     RecyclerView.Adapter<WorkoutAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -20,7 +21,7 @@ class WorkoutAdapter constructor(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val workout = workouts[holder.adapterPosition]
+        var workout = workouts.entries.elementAt(holder.adapterPosition).value
         holder.bind(workout, listener)
     }
 
@@ -33,7 +34,6 @@ class WorkoutAdapter constructor(
             binding.workoutName.text = workout.name
             binding.muscleGroups.text = workout.targetMuscleGroups.joinToString(", ")
             binding.root.setOnClickListener { listener.onWorkoutClick(workout) }
-
         }
     }
 }

@@ -13,11 +13,10 @@ import com.strongr.models.trainee.TraineeModel
 import com.strongr.models.workout.WorkoutModel
 import kotlinx.coroutines.runBlocking
 
-class WorkoutActivity: AppCompatActivity(),
-    MultiSelectionSpinnerDialog.OnMultiSpinnerSelectionListener {
+class WorkoutActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMultiSpinnerSelectionListener {
     private lateinit var binding: ActivityWorkoutBinding
     private lateinit var app: MainApp
-    private var workout = WorkoutModel("")
+    private var workout = WorkoutModel()
     var trainee = TraineeModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +25,7 @@ class WorkoutActivity: AppCompatActivity(),
         setContentView(binding.root)
 
         app = application as MainApp
-        trainee = app.firestore.currentTrainee
+        trainee = app.traineeFS.currentTrainee
 
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
@@ -45,7 +44,7 @@ class WorkoutActivity: AppCompatActivity(),
                 workout.name = binding.workoutName.text.toString()
                 createWorkout(workout)
 
-                trainee.workouts.add(workout)
+                trainee.workouts += workout.id to workout
 
                 setResult(RESULT_OK)
                 finish()
@@ -61,7 +60,7 @@ class WorkoutActivity: AppCompatActivity(),
     }
 
     private fun createWorkout(workout: WorkoutModel) = runBlocking {
-        app.firestore.workouts.create(workout, app.firestore.currentTrainee)
+        app.traineeFS.workouts.create(workout, app.traineeFS.currentTrainee)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -71,7 +70,7 @@ class WorkoutActivity: AppCompatActivity(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.item_cancel -> {
+            R.id.return_button -> {
                 finish()
             }
         }

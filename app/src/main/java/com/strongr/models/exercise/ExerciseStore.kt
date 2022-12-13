@@ -5,7 +5,7 @@ import com.strongr.models.trainee.TraineeModel
 import com.strongr.models.workout.WorkoutModel
 
 interface ExerciseStore {
-    fun create(exercise: ExerciseModel, workout: WorkoutModel, trainee: TraineeModel): Boolean
+    suspend fun create(exercise: ExerciseModel, workout: WorkoutModel, trainee: TraineeModel): Boolean
     fun update(exercise: ExerciseModel, workout: WorkoutModel, trainee: TraineeModel): Boolean
     fun delete(exercise: ExerciseModel, workout: WorkoutModel, trainee: TraineeModel): Boolean
     fun get(name: String): ExerciseModel?

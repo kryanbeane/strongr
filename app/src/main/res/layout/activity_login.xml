@@ -74,7 +74,8 @@
                 android:layout_width="189dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="Sign in Test" />
+                android:text="Sign in Test"
+                style="?android:attr/buttonBarButtonStyle" />
 
             <Button
                 android:id="@+id/signUp"
@@ -82,9 +83,18 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:includeFontPadding="true"
-                android:text="Sign up Test" />
+                android:text="Sign up Test"
+                style="?android:attr/buttonBarButtonStyle" />
+
+
         </LinearLayout>
 
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/googleSignInButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
