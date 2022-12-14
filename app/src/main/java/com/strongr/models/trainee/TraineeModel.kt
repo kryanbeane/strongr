@@ -24,7 +24,7 @@ data class TraineeModel(
     var height: Float = 0.0f,
     var weight: ArrayList<WeightModel> = arrayListOf(),
     var emailAddress: String = "",
-    var workouts: ArrayList<WorkoutModel> = arrayListOf()
+    var workouts: MutableMap<String, WorkoutModel> = mutableMapOf()
 ): Parcelable
 
 

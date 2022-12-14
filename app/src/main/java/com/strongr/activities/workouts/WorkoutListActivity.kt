@@ -6,18 +6,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.strongr.R
 import com.strongr.activities.login.LoginActivity
 import com.strongr.activities.settings.SettingsActivity
-import com.strongr.adapters.WorkoutAdapter
-import com.strongr.adapters.WorkoutListener
+import com.strongr.activities.workouts.adapters.WorkoutAdapter
+import com.strongr.activities.workouts.adapters.WorkoutListener
 import com.strongr.databinding.ActivityWorkoutListBinding
 import com.strongr.main.MainApp
 import com.strongr.models.workout.WorkoutModel
-import com.strongr.utils.parcelizeIntent
+import com.strongr.utils.RearrangeCardHelper
+import com.strongr.utils.parcelizeTraineeIntent
+import com.strongr.utils.parcelizeWorkoutIntent
 
 class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
 
@@ -36,7 +40,10 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = WorkoutAdapter(app.firestore.currentTrainee.workouts,this)
+        val adapter = WorkoutAdapter(app.traineeFS.currentTrainee.workouts,this)
+        binding.recyclerView.adapter = adapter
+        val itemTouchHelper = ItemTouchHelper(RearrangeCardHelper(adapter))
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -47,7 +54,7 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.workout_add -> {
-                getResult.launch(parcelizeIntent(this, WorkoutActivity(), "trainee", app.firestore.currentTrainee))
+                getResult.launch(parcelizeWorkoutIntent(this, WorkoutActivity(), "workout", app.workoutFS.currentWorkout))
             }
             R.id.logout -> {
                 FirebaseAuth.getInstance().signOut()
@@ -63,22 +70,14 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
 
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, app.firestore.currentTrainee.workouts.size)
+                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, app.traineeFS.currentTrainee.workouts.size)
             }
         }
 
     override fun onWorkoutClick(workout: WorkoutModel) {
-        val launcherIntent = Intent(this, WorkoutActivity::class.java)
-        getClickResult.launch(launcherIntent)
-    }
+        app.workoutFS.currentWorkout = workout
 
-    private val getClickResult =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.
-                notifyItemRangeChanged(0,app.firestore.currentTrainee.workouts.size)
-            }
-        }
+        finish()
+        startActivity(parcelizeWorkoutIntent(this, Workout2Activity(), "workout", workout))
+    }
 }
