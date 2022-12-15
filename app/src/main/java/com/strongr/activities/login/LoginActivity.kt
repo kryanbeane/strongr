@@ -4,15 +4,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
+import com.strongr.R
 import com.strongr.activities.workouts.WorkoutListActivity
 import com.strongr.databinding.ActivityLoginBinding
 import com.strongr.main.MainApp
@@ -28,7 +39,8 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var app: MainApp
     private val tag = "LOGIN_ACTIVITY"
-
+    var gsoClient = MutableLiveData<GoogleSignInClient>()
+    private lateinit var startForResult : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Initialize view
@@ -50,6 +62,72 @@ class LoginActivity: AppCompatActivity() {
         binding.signIn.setOnClickListener {
             signIn(binding.emailAddress.text.toString(), binding.password.text.toString())
         }
+
+        configGoogleSignIn()
+        setupGoogleSignInCallback()
+        binding.googleSignInButton.setOnClickListener {
+            googleSignIn()
+        }
+
+    }
+
+    private fun googleSignIn() {
+        val signInIntent = gsoClient.value!!.signInIntent
+
+        startForResult.launch(signInIntent)
+    }
+
+    private fun setupGoogleSignInCallback() {
+        startForResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                when(result.resultCode){
+                    RESULT_OK -> {
+                        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                        try {
+                            // Google Sign In was successful, authenticate with Firebase
+                            val account = task.getResult(ApiException::class.java)
+                            firebaseAuthWithGoogle(account!!)
+                        } catch (e: ApiException) {
+                            // Google Sign In failed
+                            Toast.makeText(this, "Google Sign In failed", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    RESULT_CANCELED -> {
+                    } else -> { }
+                }
+            }
+    }
+
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(application!!.mainExecutor) { task ->
+                if (task.isSuccessful) {
+                    val trainee = auth.currentUser?.email?.let { auth.currentUser?.let { it1 -> TraineeModel(emailAddress= it, id= it1.uid) } }
+                    if (trainee != null) {
+                        createTrainee(trainee)
+                        app.traineeFS.currentTrainee = trainee
+                        startActivity(parcelizeTraineeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
+                    }
+
+                } else {
+                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun createTrainee(traineeModel: TraineeModel) = runBlocking {
+        app.traineeFS.create(traineeModel)
+
+    }
+
+    private fun configGoogleSignIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(application!!.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        gsoClient.value = GoogleSignIn.getClient(application!!.applicationContext,gso)
     }
 
     public override fun onStart() {
@@ -105,7 +183,7 @@ class LoginActivity: AppCompatActivity() {
         if (user != null) {
 
             val trainee = TraineeModel(emailAddress=emailAddress, id=user.uid)
-             app.traineeFS.create(trainee)
+            app.traineeFS.create(trainee)
 
             app.traineeFS.currentTrainee = trainee
             startActivity(parcelizeTraineeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))

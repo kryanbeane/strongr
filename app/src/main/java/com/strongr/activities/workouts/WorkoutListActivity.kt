@@ -20,7 +20,6 @@ import com.strongr.databinding.ActivityWorkoutListBinding
 import com.strongr.main.MainApp
 import com.strongr.models.workout.WorkoutModel
 import com.strongr.utils.RearrangeCardHelper
-import com.strongr.utils.parcelizeTraineeIntent
 import com.strongr.utils.parcelizeWorkoutIntent
 
 class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
@@ -32,11 +31,17 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.bottomNavigationView.background = null
+        binding.bottomNavigationView.menu.getItem(2).isEnabled = false
 
         app = application as MainApp
 
         binding.toolbar.title = title
         setSupportActionBar(binding.toolbar)
+
+        binding.fab.setOnClickListener {
+            getResult.launch(parcelizeWorkoutIntent(this, WorkoutActivity(), "workout", app.workoutFS.currentWorkout))
+        }
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
@@ -53,9 +58,6 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.workout_add -> {
-                getResult.launch(parcelizeWorkoutIntent(this, WorkoutActivity(), "workout", app.workoutFS.currentWorkout))
-            }
             R.id.logout -> {
                 FirebaseAuth.getInstance().signOut()
                 finish()
