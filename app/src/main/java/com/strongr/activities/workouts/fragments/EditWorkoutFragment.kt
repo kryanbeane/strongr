@@ -50,7 +50,20 @@ class EditWorkoutFragment: Fragment(), MultiSelectionSpinnerDialog.OnMultiSpinne
 
         view.findViewById<Button>(R.id.cancel_changes).setOnClickListener {
             val activity = activity as ViewWorkoutActivity
-            activity.launchWorkoutDetailsFragment()        }
+            activity.launchWorkoutDetailsFragment()
+        }
+
+        view.findViewById<Button>(R.id.save_changes).setOnClickListener {
+            val activity = activity as ViewWorkoutActivity
+
+            if (workoutName.text.toString().isNotEmpty() && muscleGroups.text.toString().isNotEmpty()) {
+                currentWorkout.name = workoutName.text.toString()
+                currentWorkout.targetMuscleGroups = muscleGroups.text.toString().split(", ") as ArrayList<String>
+                activity.updateWorkout(currentWorkout)
+            }
+            activity.launchWorkoutDetailsFragment()
+
+        }
         return view
     }
 

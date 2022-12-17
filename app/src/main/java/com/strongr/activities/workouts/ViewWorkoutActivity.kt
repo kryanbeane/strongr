@@ -24,6 +24,7 @@ import com.strongr.exercises.adapters.ExerciseAdapter
 import com.strongr.exercises.adapters.ExerciseListener
 import com.strongr.main.MainApp
 import com.strongr.models.exercise.ExerciseModel
+import com.strongr.models.workout.WorkoutModel
 import com.strongr.utils.RearrangeCardHelperExercise
 import com.strongr.utils.parcelizeWorkoutIntent
 import kotlinx.coroutines.runBlocking
@@ -69,6 +70,11 @@ class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
             dialog.show()
         }
 
+    }
+
+    fun updateWorkout(workout: WorkoutModel) = runBlocking {
+        app.workoutFS.update(workout, app.traineeFS.currentTrainee)
+        app.traineeFS.currentTrainee.workouts[workout.id] = workout
     }
 
     fun launchEditWorkoutFragment() {
