@@ -40,31 +40,31 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.android.material:material:1.8.0-beta01'
+    // For bottom nav menu
+    implementation 'com.google.android.material:material:1.7.0'
+    // For making recycler views rearrangeable
     implementation 'com.ernestoyaquello.dragdropswiperecyclerview:drag-drop-swipe-recyclerview:1.1.1'
-
+    // For adding fragments to activities
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
-
+    // For ...
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-
+    // For adding a multi select spinner
     implementation 'com.github.AnuraganuPunalur:Multi-Selection-Spinner-Android:1.0'
-
+    // For using co routines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
-
+    // For Adding Firestore
     implementation 'com.google.firebase:firebase-firestore-ktx'
-
+    // For ...
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
-
     // Firebase auth drop in UI
     implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
-
+    // For adding firebase ui
     implementation "com.firebaseui:firebase-ui-auth:8.0.2"
-
     // Allows backwards compatibility with older versions of dependencies
     implementation platform('com.google.firebase:firebase-bom:31.1.0')
-
-    // Firebase auth package
+    // For Firebase auth
     implementation 'com.google.firebase:firebase-auth-ktx'
-
     // Masked edit text - might remove later currently unused
     implementation 'io.github.vicmikhailau:MaskedEditText:4.0.7'
     implementation 'com.google.android.material:material:1.7.0'
