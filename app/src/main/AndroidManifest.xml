@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Strongr"
         tools:targetApi="31">
         <activity
-            android:name=".activities.workouts.Workout2Activity"
+            android:name=".activities.workouts.ViewWorkoutActivity"
             android:exported="false" />
         <activity
             android:name=".exercises.ExerciseActivity"

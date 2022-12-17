@@ -1,6 +1,7 @@
 package com.strongr.activities.workouts
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,14 +9,16 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.strongr.R
 import com.strongr.activities.login.LoginActivity
 import com.strongr.activities.settings.SettingsActivity
-import com.strongr.activities.workouts.fragments.WorkoutFragment
-import com.strongr.databinding.ActivityWorkout2Binding
+import com.strongr.activities.workouts.fragments.EditWorkoutFragment
+import com.strongr.activities.workouts.fragments.WorkoutDetailsFragment
+import com.strongr.databinding.ActivityViewWorkoutBinding
 import com.strongr.exercises.ExerciseActivity
 import com.strongr.exercises.adapters.ExerciseAdapter
 import com.strongr.exercises.adapters.ExerciseListener
@@ -23,21 +26,21 @@ import com.strongr.main.MainApp
 import com.strongr.models.exercise.ExerciseModel
 import com.strongr.utils.RearrangeCardHelperExercise
 import com.strongr.utils.parcelizeWorkoutIntent
+import kotlinx.coroutines.runBlocking
 
-class Workout2Activity : AppCompatActivity(), ExerciseListener {
+class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
     lateinit var app: MainApp
-    private lateinit var binding: ActivityWorkout2Binding
+    private lateinit var binding: ActivityViewWorkoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityWorkout2Binding.inflate(layoutInflater)
+        binding = ActivityViewWorkoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         app = application as MainApp
 
         binding.toolbar.title = title
         setSupportActionBar(binding.toolbar)
-
 
 
         val layoutManager = LinearLayoutManager(this)
@@ -47,13 +50,44 @@ class Workout2Activity : AppCompatActivity(), ExerciseListener {
         val itemTouchHelper = ItemTouchHelper(RearrangeCardHelperExercise(adapter))
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
 
-        val workoutFragment = WorkoutFragment()
-        supportFragmentManager.beginTransaction().add(R.id.workout_fragment_container, workoutFragment).commit()
+        val workoutDetailsFragment = WorkoutDetailsFragment()
+        supportFragmentManager.beginTransaction().add(R.id.workout_fragment_container, workoutDetailsFragment).commit()
+
+        binding.fab.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Deleting Workout")
+            builder.setMessage("Are you sure you want to delete this workout?")
+            builder.setPositiveButton("Yes") { dialog, which ->
+                deleteWorkout()
+                finish()
+                startActivity(Intent(this, WorkoutListActivity::class.java))
+            }
+            builder.setNegativeButton("No") { dialog, which ->
+                dialog.dismiss()
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+    }
+
+    fun launchEditWorkoutFragment() {
+        val editWorkoutFragment = EditWorkoutFragment.newInstance(app.workoutFS.currentWorkout)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.workout_fragment_container, editWorkoutFragment).commit()
+    }
+
+    private fun deleteWorkout() = runBlocking {
+        app.workoutFS.delete(app.workoutFS.currentWorkout, app.traineeFS.currentTrainee)
+        app.traineeFS.currentTrainee.workouts.remove(app.workoutFS.currentWorkout.id)
+    }
+
+    fun launchWorkoutDetailsFragment() {
 
     }
 
     fun launchExerciseActivity() {
-        getResult.launch(parcelizeWorkoutIntent(this, ExerciseActivity(), "workout", app.workoutFS.currentWorkout))
+        return getResult.launch(parcelizeWorkoutIntent(this, ExerciseActivity(), "workout", app.workoutFS.currentWorkout))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -78,6 +112,7 @@ class Workout2Activity : AppCompatActivity(), ExerciseListener {
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
+        finish()
         startActivity(Intent(this, WorkoutListActivity::class.java))
     }
 

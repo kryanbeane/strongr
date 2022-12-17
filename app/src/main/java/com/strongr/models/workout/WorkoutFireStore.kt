@@ -21,19 +21,17 @@ class WorkoutFireStore: WorkoutStore {
     }
     
     override suspend fun update(workout: WorkoutModel, trainee: TraineeModel) {
-        db.collection(collectionName)
-            .document(trainee.id).update(
-                "workouts", FieldValue.arrayUnion(workout)
-            ).await()
+        if (workout.name.isNotEmpty()) {
+            val ref = db.collection(collectionName)
+                .document(trainee.id)
+            ref.update("workouts.${workout.id}", workout).await()
+        }
     }
 
     override suspend fun delete(workout: WorkoutModel, trainee: TraineeModel) {
-        db.collection(collectionName)
-            .document(trainee.id).update(
-                "workouts", FieldValue.arrayRemove(workout)
-            ).await()
-//        val foundWorkout = db.collectionGroup("workouts").whereEqualTo("name", workout.name).get().await()
-//        foundWorkout.documents[0].reference.delete().await()
+        val ref = db.collection(collectionName).document(trainee.id)
+        val updates = mapOf("workouts.${workout.id}" to FieldValue.delete())
+        ref.update(updates).await()
     }
 
     override fun get(id: String, trainee: TraineeModel): WorkoutModel? = runBlocking {

@@ -61,4 +61,6 @@
     <string name="editworkout_button">editWorkout Button</string>
     <string name="list_of_muscle_groups">List of Muscle Groups</string>
     <string name="muscle_groups">Muscle Groups</string>
+    <string name="save">Save</string>
+    <string name="delete_icon">Delete Icon</string>
 </resources>

@@ -3,11 +3,8 @@ package com.strongr.exercises.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.strongr.activities.workouts.Workout2Activity
-import com.strongr.activities.workouts.adapters.WorkoutAdapter
 import com.strongr.databinding.CardExerciseBinding
 import com.strongr.models.exercise.ExerciseModel
-import com.strongr.models.workout.WorkoutModel
 
 class ExerciseAdapter(
     private var exercises: MutableMap<String, ExerciseModel>,
