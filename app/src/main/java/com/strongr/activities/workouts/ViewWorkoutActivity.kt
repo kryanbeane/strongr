@@ -77,14 +77,17 @@ class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
             .replace(R.id.workout_fragment_container, editWorkoutFragment).commit()
     }
 
+    fun launchWorkoutDetailsFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.workout_fragment_container, WorkoutDetailsFragment()).commit()
+    }
+
     private fun deleteWorkout() = runBlocking {
         app.workoutFS.delete(app.workoutFS.currentWorkout, app.traineeFS.currentTrainee)
         app.traineeFS.currentTrainee.workouts.remove(app.workoutFS.currentWorkout.id)
     }
 
-    fun launchWorkoutDetailsFragment() {
 
-    }
 
     fun launchExerciseActivity() {
         return getResult.launch(parcelizeWorkoutIntent(this, ExerciseActivity(), "workout", app.workoutFS.currentWorkout))
