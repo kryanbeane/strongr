@@ -25,18 +25,20 @@ class TraineeFireStore: TraineeStore {
     }
 
     override suspend fun update(trainee: TraineeModel) {
-        if (validUserDetails(trainee)) {
-            db.collection(collectionName)
-                .document(trainee.id).update(mapOf(
+
+            val ref = db.collection(collectionName).document(trainee.id)
+            ref.update(
+                mapOf(
                     "fullName" to trainee.fullName,
                     "dob" to trainee.dob,
                     "sex" to trainee.sex,
                     "workoutsPerWeek" to trainee.workoutsPerWeek,
                     "activityLevel" to trainee.activityLevel,
                     "height" to trainee.height,
-                    "emailAddress" to trainee.emailAddress,
-                )).await()
-        }
+                )
+            ).await()
+
+
     }
 
     override suspend fun delete(trainee: TraineeModel, user: FirebaseUser) {
@@ -67,12 +69,10 @@ class TraineeFireStore: TraineeStore {
     }
 
     private fun validUserDetails(trainee: TraineeModel): Boolean {
-        return trainee.emailAddress.isNotEmpty()
-                && trainee.id.isNotEmpty()
-                && trainee.fullName.isNotEmpty()
+        return trainee.fullName.isNotEmpty()
                 && trainee.dob.before(Date())
                 && trainee.sex.isNotEmpty()
-                && trainee.workoutsPerWeek.isNotEmpty()
+                && trainee.workoutsPerWeek != 0
                 && trainee.activityLevel.isNotEmpty()
                 && !trainee.height.equals(0.0f)
     }

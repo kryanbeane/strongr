@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/workout_add"
         android:icon="@drawable/baseline_library_add_24"
         android:title="@string/createWorkout"
         app:showAsAction="always" />
+
     <item
         android:id="@+id/logout"
         android:icon="@drawable/baseline_logout_24"
         android:title="@string/logout"
         app:showAsAction="always" />
+
     <item
         android:id="@+id/settings"
         android:icon="@drawable/baseline_settings_24"
         android:title="@string/settings"
         app:showAsAction="always" />
+
 </menu>

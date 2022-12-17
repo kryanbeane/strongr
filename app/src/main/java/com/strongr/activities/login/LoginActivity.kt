@@ -107,7 +107,9 @@ class LoginActivity: AppCompatActivity() {
                     if (trainee != null) {
                         createTrainee(trainee)
                         app.traineeFS.currentTrainee = trainee
-                        startActivity(parcelizeTraineeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
+
+                        finish()
+                        startActivity(parcelizeTraineeIntent(this@LoginActivity, TraineeDetailsActivity(), "trainee", trainee))
                     }
 
                 } else {
@@ -181,15 +183,14 @@ class LoginActivity: AppCompatActivity() {
         Toast.makeText(this@LoginActivity, "Welcome $user!", Toast.LENGTH_LONG).show()
 
         if (user != null) {
-
             val trainee = TraineeModel(emailAddress=emailAddress, id=user.uid)
             app.traineeFS.create(trainee)
 
             app.traineeFS.currentTrainee = trainee
-            startActivity(parcelizeTraineeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
             finish()
+            startActivity(parcelizeTraineeIntent(this@LoginActivity, TraineeDetailsActivity(), "trainee", trainee))
         } else {
-            Log.d(tag, "user is null, signup was unsuccessful")
+            Log.d(tag, "Database Error D':")
         }
     }
 
