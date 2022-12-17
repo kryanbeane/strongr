@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,6 +42,10 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
             getResult.launch(parcelizeWorkoutIntent(this, WorkoutActivity(), "workout", app.workoutFS.currentWorkout))
         }
 
+        binding.bottomNavigationView.selectedItemId = R.id.home
+
+        // TODO Add listeners to the bottom nav bar for app navigation
+
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         val adapter = WorkoutAdapter(app.traineeFS.currentTrainee.workouts,this)
@@ -78,8 +81,6 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
 
     override fun onWorkoutClick(workout: WorkoutModel) {
         app.workoutFS.currentWorkout = workout
-
-        finish()
-        startActivity(parcelizeWorkoutIntent(this, Workout2Activity(), "workout", workout))
+        startActivity(parcelizeWorkoutIntent(this, ViewWorkoutActivity(), "workout", workout))
     }
 }

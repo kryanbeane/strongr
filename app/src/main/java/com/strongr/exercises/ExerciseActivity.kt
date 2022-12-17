@@ -1,6 +1,5 @@
 package com.strongr.exercises
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -9,7 +8,6 @@ import android.widget.SeekBar
 import android.widget.Toast
 import com.anurag.multiselectionspinner.MultiSelectionSpinnerDialog
 import com.strongr.R
-import com.strongr.activities.workouts.WorkoutListActivity
 import com.strongr.databinding.ActivityExerciseBinding
 import com.strongr.main.MainApp
 import com.strongr.models.exercise.ExerciseDetailsModel
@@ -55,13 +53,14 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
                 rir = binding.rirSlider.progress.toFloat(),
             )
             if (!createExercise(newExercise)) {
-                Toast.makeText(this, "NO EXERCISE CREATED", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Failed to create new exercise, Try Again!", Toast.LENGTH_LONG).show()
             } else {
                 app.workoutFS.currentWorkout.exercises += newExercise.id to newExercise
                 setResult(RESULT_OK)
                 finish()
             }
         }
+
     }
 
     private fun configureSeekBar(binding: ActivityExerciseBinding) {
@@ -89,7 +88,6 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
         app.exerciseFS.create(exercise, workout, app.traineeFS.currentTrainee)
     }
 
-
     override fun OnMultiSpinnerItemSelected(chosenItems: MutableList<String>?) {
         muscleGroups = chosenItems as ArrayList<String>
     }
@@ -102,7 +100,8 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.return_button -> {
-                startActivity(Intent(this, WorkoutListActivity::class.java))
+                setResult(RESULT_OK)
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

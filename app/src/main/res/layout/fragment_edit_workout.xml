@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,32 +11,31 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/workout_name"
+        <EditText
+            android:id="@+id/workoutName"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:layout_height="45dp"
+            android:layout_margin="8dp"
+            android:autofillHints="hint"
+            android:hint="@string/workout_name"
+            android:inputType="text"
+            android:maxLength="25"
+            android:maxLines="1"
             android:padding="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/workout_name"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/muscleGroups"
+        <com.anurag.multiselectionspinner.MultiSpinner
+            android:id="@+id/multiSpinner"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:layout_height="45dp"
+            android:layout_margin="8dp"
             android:padding="8dp"
-            android:text="@string/list_of_muscle_groups"
-            android:textAlignment="center"
-            android:textSize="14sp"
-            android:textStyle="normal"
-            app:layout_constraintTop_toBottomOf="@+id/workout_name" />
+            android:hint="@string/muscle_groups"
+            app:layout_constraintTop_toBottomOf="@id/workoutName"
+            />
+
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -48,32 +48,30 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/muscleGroups">
+            app:layout_constraintTop_toBottomOf="@+id/multiSpinner">
 
             <Button
-                android:id="@+id/addExercise"
+                android:id="@+id/save_changes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="8dp"
                 android:scaleType="centerInside"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/colorAccent"
-                android:drawableLeft="@drawable/baseline_add_24"
-                android:text="Add"
-                android:contentDescription="@string/addexercise_button" />
+                android:drawableLeft="@drawable/baseline_done_24"
+                android:text="@string/save" />
 
             <Button
-                android:id="@+id/editWorkout"
+                android:id="@+id/cancel_changes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorAccent"
-                android:layout_weight="1"
                 android:layout_margin="8dp"
                 android:scaleType="centerInside"
-                android:text="Edit"
-                android:drawableLeft="@drawable/baseline_edit_note_24"
-                android:contentDescription="@string/editworkout_button" />
-
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorAccent"
+                android:drawableLeft="@drawable/outline_cancel_24"
+                android:text="@string/cancel"
+                />
 
         </LinearLayout>
 

@@ -62,8 +62,8 @@
                     android:autofillHints="hint"
                     android:hint="Exercise Instructions"
                     android:inputType="text"
-                    android:maxLength="25"
-                    android:maxLines="1"
+                    android:maxLength="250"
+                    android:maxLines="3"
                     android:padding="8dp"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp" />
@@ -192,11 +192,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:background="@color/colorAccent"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
                     android:text="Create Exercise"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
         </ScrollView>
 

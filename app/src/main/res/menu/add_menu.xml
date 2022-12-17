@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/workout_add"
+        android:id="@+id/return_button"
         android:icon="@drawable/baseline_subdirectory_arrow_left_24"
         android:title="@string/createWorkout"
         app:showAsAction="always" />

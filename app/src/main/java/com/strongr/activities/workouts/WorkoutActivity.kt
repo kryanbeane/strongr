@@ -53,6 +53,7 @@ class WorkoutActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMultiS
                 Snackbar.make(it,"Please Enter a name", Snackbar.LENGTH_LONG).show()
             }
         }
+
     }
 
     override fun OnMultiSpinnerItemSelected(chosenItems: MutableList<String>?) {
@@ -77,8 +78,6 @@ class WorkoutActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMultiS
         return super.onOptionsItemSelected(item)
     }
 
-    companion object {
-        private const val tag = "WORKOUT_ACTIVITY"
-    }
+
 
 }
