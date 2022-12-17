@@ -24,6 +24,7 @@ import com.strongr.exercises.adapters.ExerciseAdapter
 import com.strongr.exercises.adapters.ExerciseListener
 import com.strongr.main.MainApp
 import com.strongr.models.exercise.ExerciseModel
+import com.strongr.models.workout.WorkoutModel
 import com.strongr.utils.RearrangeCardHelperExercise
 import com.strongr.utils.parcelizeWorkoutIntent
 import kotlinx.coroutines.runBlocking
@@ -71,10 +72,20 @@ class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
 
     }
 
+    fun updateWorkout(workout: WorkoutModel) = runBlocking {
+        app.workoutFS.update(workout, app.traineeFS.currentTrainee)
+        app.traineeFS.currentTrainee.workouts[workout.id] = workout
+    }
+
     fun launchEditWorkoutFragment() {
         val editWorkoutFragment = EditWorkoutFragment.newInstance(app.workoutFS.currentWorkout)
         supportFragmentManager.beginTransaction()
             .replace(R.id.workout_fragment_container, editWorkoutFragment).commit()
+    }
+
+    fun launchWorkoutDetailsFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.workout_fragment_container, WorkoutDetailsFragment()).commit()
     }
 
     private fun deleteWorkout() = runBlocking {
@@ -82,9 +93,7 @@ class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
         app.traineeFS.currentTrainee.workouts.remove(app.workoutFS.currentWorkout.id)
     }
 
-    fun launchWorkoutDetailsFragment() {
 
-    }
 
     fun launchExerciseActivity() {
         return getResult.launch(parcelizeWorkoutIntent(this, ExerciseActivity(), "workout", app.workoutFS.currentWorkout))
