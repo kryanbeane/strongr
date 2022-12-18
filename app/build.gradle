@@ -36,11 +36,14 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
 }
 
 dependencies {
+    // For google fit integration
+    implementation 'com.google.android.gms:play-services-fitness:21.1.0'
+    // For ...
     implementation 'androidx.cardview:cardview:1.0.0'
+    // For ...
     implementation 'com.google.android.material:material:1.8.0-beta01'
     // For bottom nav menu
     implementation 'com.google.android.material:material:1.7.0'

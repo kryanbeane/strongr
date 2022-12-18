@@ -27,7 +27,7 @@
 
         <androidx.gridlayout.widget.GridLayout
             android:layout_width="match_parent"
-            android:layout_height="384dp"
+            android:layout_height="672dp"
             android:layout_margin="8dp"
             app:alignmentMode="alignMargins"
             app:columnCount="2"
@@ -43,6 +43,8 @@
                 app:cardBackgroundColor="@color/accentGrey"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="48dp"
                 app:layout_columnWeight="1"
                 app:layout_rowWeight="1">
 
@@ -54,15 +56,15 @@
 
                     <ImageView
                         android:id="@+id/workouts_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="12dp"
                         app:srcCompat="@drawable/baseline_directions_run_24" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="6dp"
                         android:text="@string/my_workouts"
                         android:textColor="@color/white" />
 
@@ -74,6 +76,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="28dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="48dp"
                 app:cardBackgroundColor="@color/accentGrey"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
@@ -88,15 +92,15 @@
 
                     <ImageView
                         android:id="@+id/workouts_image2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="12dp"
-                        app:srcCompat="@drawable/person" />
+                        app:srcCompat="@drawable/baseline_person_24aaa" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="6dp"
                         android:text="Profile"
                         android:textColor="@color/white" />
 
@@ -111,6 +115,7 @@
                 app:cardBackgroundColor="@color/accentGrey"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
+                android:layout_marginBottom="48dp"
                 app:layout_columnWeight="1"
                 app:layout_rowWeight="1">
 
@@ -122,15 +127,15 @@
 
                     <ImageView
                         android:id="@+id/workouts_image3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="12dp"
                         app:srcCompat="@drawable/baseline_monitor_weight_24" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="6dp"
                         android:text="@string/log_weight"
                         android:textColor="@color/white" />
 
@@ -145,6 +150,7 @@
                 android:layout_margin="28dp"
                 app:cardBackgroundColor="@color/accentGrey"
                 app:cardCornerRadius="12dp"
+                android:layout_marginBottom="48dp"
                 app:cardElevation="4dp"
                 app:layout_columnWeight="1"
                 app:layout_rowWeight="1">
@@ -157,15 +163,15 @@
 
                     <ImageView
                         android:id="@+id/workouts_image4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="12dp"
-                        app:srcCompat="@drawable/baseline_logout_24" />
+                        app:srcCompat="@drawable/baseline_logout_24222" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="6dp"
                         android:text="@string/sign_out"
                         android:textColor="@color/white" />
 
@@ -173,32 +179,93 @@
 
             </androidx.cardview.widget.CardView>
 
-        </androidx.gridlayout.widget.GridLayout>
-
-        <androidx.gridlayout.widget.GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            app:alignmentMode="alignMargins"
-            app:columnCount="1"
-            app:columnOrderPreserved="true"
-            app:rowCount="1">
-
             <androidx.cardview.widget.CardView
+                android:id="@+id/steps_card"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="28dp"
                 app:cardBackgroundColor="@color/accentGrey"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
+                android:layout_marginBottom="48dp"
                 app:layout_columnWeight="1"
                 app:layout_rowWeight="1">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
+                    <ImageView
+                        android:id="@+id/steps_image"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="12dp"
+                        app:srcCompat="@drawable/baseline_directions_walk_24" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Step Count"
+                        android:textColor="@color/white" />
 
+                    <TextView
+                        android:id="@+id/steps_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Num"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/energy_card"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="28dp"
+                app:cardBackgroundColor="@color/accentGrey"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="48dp"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/energy_image"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="12dp"
+                        app:srcCompat="@drawable/baseline_local_fire_department_24" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Calories Burned"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/energy_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Num"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
         </androidx.gridlayout.widget.GridLayout>
 
     </LinearLayout>
