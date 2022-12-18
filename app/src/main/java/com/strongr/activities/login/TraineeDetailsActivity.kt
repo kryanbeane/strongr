@@ -14,6 +14,7 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.strongr.R
+import com.strongr.activities.dashboard.DashboardActivity
 import com.strongr.activities.workouts.WorkoutListActivity
 import com.strongr.databinding.ActivityTraineeDetailsBinding
 import com.strongr.main.MainApp
@@ -62,7 +63,7 @@ class TraineeDetailsActivity : AppCompatActivity() {
             app.traineeFS.currentTrainee = trainee
 
             finish()
-            startActivity(Intent(this, WorkoutListActivity::class.java))
+            startActivity(Intent(this, DashboardActivity::class.java))
         }
 
     }
