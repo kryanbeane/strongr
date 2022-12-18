@@ -27,7 +27,7 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
         setContentView(binding.root)
         app = application as MainApp
         workout = app.workoutFS.currentWorkout
-
+        binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
         configureSeekBar(binding)
 
@@ -39,6 +39,7 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
 
         binding.multiSpinner.setAdapterWithOutImage(this, muscleGroupList, this)
         binding.multiSpinner.initMultiSpinner(this, binding.multiSpinner)
+
 
 
         binding.createExercise.setOnClickListener {
@@ -93,8 +94,12 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.add_menu, menu)
+        menuInflater.inflate(R.menu.edit_exercise, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun deleteExercise() = runBlocking {
+        app.exerciseFS.delete()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -102,6 +107,9 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
             R.id.return_button -> {
                 setResult(RESULT_OK)
                 finish()
+            }
+            R.id.del_exercise -> {
+
             }
         }
         return super.onOptionsItemSelected(item)

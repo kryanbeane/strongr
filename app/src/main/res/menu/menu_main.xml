@@ -10,12 +10,6 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/logout"
-        android:icon="@drawable/baseline_logout_24"
-        android:title="@string/logout"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/settings"
         android:icon="@drawable/baseline_settings_24"
         android:title="@string/settings"

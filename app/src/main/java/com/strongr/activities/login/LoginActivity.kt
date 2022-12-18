@@ -109,8 +109,6 @@ class LoginActivity: AppCompatActivity() {
                         startActivity(parcelizeTraineeIntent(this@LoginActivity, TraineeDetailsActivity(), "trainee", trainee))
                     }
 
-                } else {
-                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -138,15 +136,10 @@ class LoginActivity: AppCompatActivity() {
             val trainee = app.traineeFS.get(currentUser.uid)
             if (trainee != null) {
                 app.traineeFS.currentTrainee = trainee
-                Toast.makeText(baseContext, "Welcome Back ${trainee.fullName.substring(0, trainee.fullName.indexOf(" "))}", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
 
-            } else {
-                Toast.makeText(baseContext, "NOT welcome back ${currentUser.email}", Toast.LENGTH_SHORT).show()
             }
-        } else {
-            Toast.makeText(baseContext, "Login failed", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -155,7 +148,6 @@ class LoginActivity: AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { result ->
                 if (result.isSuccessful) {
-                    Toast.makeText(this@LoginActivity, "Welcome back $email!", Toast.LENGTH_SHORT).show()
                     val trainee = app.traineeFS.get(auth.currentUser!!.uid)
                     if (trainee != null) {
                         app.traineeFS.currentTrainee = trainee
@@ -175,7 +167,6 @@ class LoginActivity: AppCompatActivity() {
 
     private fun completeSignUpFlow(emailAddress: String, password: String) = runBlocking {
         val user = signUp(emailAddress, password).user
-        Toast.makeText(this@LoginActivity, "Welcome $user!", Toast.LENGTH_LONG).show()
 
         if (user != null) {
             val trainee = TraineeModel(emailAddress=emailAddress, id=user.uid)

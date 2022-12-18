@@ -19,7 +19,19 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:titleTextColor="@color/colorPrimary" />
+            app:titleTextColor="@color/colorPrimary" >
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:drawableLeft="@drawable/baseline_fitness_center_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="  STRONGR"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
+
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -28,33 +40,6 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:fabCradleMargin="10dp"
-        app:fabCradleRoundedCornerRadius="10dp"
-        app:fabCradleVerticalOffset="10dp">
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
-            app:menu="@menu/bottom_nav" />
-
-    </com.google.android.material.bottomappbar.BottomAppBar>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/add"
-        app:layout_anchor="@id/bottomAppBar" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
