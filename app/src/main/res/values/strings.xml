@@ -63,4 +63,22 @@
     <string name="muscle_groups">Muscle Groups</string>
     <string name="save">Save</string>
     <string name="delete_icon">Delete Icon</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="full_name">Full Name</string>
+    <string name="sex">Sex</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="workouts_per_week">Workouts per week</string>
+    <string name="activity_level">Activity Level</string>
+    <string name="email_address">Email Address</string>
+    <string name="height_cm">Height (cm)</string>
+    <string name="submit">Submit</string>
+
+    <string-array name="activity_levels">
+        <item>Sedentary</item>
+        <item>Lightly Active</item>
+        <item>Moderately Active</item>
+        <item>Very Active</item>
+        <item>Extra Active</item>
+    </string-array>
 </resources>
