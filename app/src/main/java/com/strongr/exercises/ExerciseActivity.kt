@@ -19,6 +19,7 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
     private lateinit var binding: ActivityExerciseBinding
     private lateinit var app: MainApp
     private var workout = WorkoutModel()
+    private var exercise = ExerciseModel()
     private var muscleGroups = arrayListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +41,23 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
         binding.multiSpinner.setAdapterWithOutImage(this, muscleGroupList, this)
         binding.multiSpinner.initMultiSpinner(this, binding.multiSpinner)
 
+        if (intent.hasExtra("exercise")) {
+            exercise = intent.getParcelableExtra("exercise")!!
 
+            binding.exerciseName.hint = exercise.exerciseDetails.name
+            binding.instructions.hint = exercise.instructions
+            binding.multiSpinner.text = exercise.exerciseDetails.muscleGroups.joinToString(", ")
+            binding.setNumber.text = exercise.sets.toString()
+            binding.setSlider.progress = exercise.sets
+            binding.repNumber.text = exercise.sets.toString()
+            binding.repSlider.progress = exercise.reps
+            binding.rirNumber.text = exercise.sets.toString()
+            binding.rirSlider.progress = exercise.rir.toInt()
+            binding.createExercise.text = "Save Changes"
+        }
 
         binding.createExercise.setOnClickListener {
-            val newExercise = ExerciseModel(
+            exercise = ExerciseModel(
                 exerciseDetails = ExerciseDetailsModel(
                     binding.exerciseName.text.toString(),
                     muscleGroups,
@@ -53,10 +67,10 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
                 reps = binding.repSlider.progress,
                 rir = binding.rirSlider.progress.toFloat(),
             )
-            if (!createExercise(newExercise)) {
+            if (!createExercise(exercise)) {
                 Toast.makeText(this, "Failed to create new exercise, Try Again!", Toast.LENGTH_LONG).show()
             } else {
-                app.workoutFS.currentWorkout.exercises += newExercise.id to newExercise
+                app.workoutFS.currentWorkout.exercises += exercise.id to exercise
                 setResult(RESULT_OK)
                 finish()
             }
@@ -90,6 +104,9 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
     }
 
     override fun OnMultiSpinnerItemSelected(chosenItems: MutableList<String>?) {
+        if (intent.hasExtra("exercise")){
+            exercise.exerciseDetails.muscleGroups = chosenItems as ArrayList<String>
+        }
         muscleGroups = chosenItems as ArrayList<String>
     }
 
@@ -99,7 +116,9 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
     }
 
     private fun deleteExercise() = runBlocking {
-        app.exerciseFS.delete()
+        app.exerciseFS.delete(app.exerciseFS.currentExercise, app.workoutFS.currentWorkout, app.traineeFS.currentTrainee)
+        app.workoutFS.currentWorkout.exercises.remove(app.exerciseFS.currentExercise.id)
+        workout.exercises.remove(app.exerciseFS.currentExercise.id)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -109,7 +128,9 @@ class ExerciseActivity: AppCompatActivity(), MultiSelectionSpinnerDialog.OnMulti
                 finish()
             }
             R.id.del_exercise -> {
-
+                deleteExercise()
+                setResult(RESULT_OK)
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

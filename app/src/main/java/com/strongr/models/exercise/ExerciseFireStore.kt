@@ -26,15 +26,14 @@ class ExerciseFireStore: ExerciseStore {
         if (exercise.exerciseDetails.name.isNotEmpty()) {
             val ref = db.collection(collectionName)
                 .document(trainee.id)
-            ref.update("workouts.${workout.id}", workout).await()
+            ref.update("workouts.${workout.id}.exercises.${exercise.id}", exercise).await()
         }
     }
 
 
     override suspend fun delete(exercise: ExerciseModel, workout: WorkoutModel, trainee: TraineeModel) {
         val ref = db.collection(collectionName).document(trainee.id)
-        val workoutToUpdate =   workout.copy(exercises = workout.exercises.filter { it.id != exercise.id })
-        val updates = mapOf("workouts.${workout.id}" to workoutToUpdate)
+        val updates = mapOf("workouts.${workout.id}.exercises.${exercise.id}" to FieldValue.delete())
         ref.update(updates).await()
     }
 

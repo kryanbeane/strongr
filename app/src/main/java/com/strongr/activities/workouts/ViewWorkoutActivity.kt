@@ -129,15 +129,8 @@ class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
         }
     }
 
-    private val getClickResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0,app.workoutFS.currentWorkout.exercises.size)
-            }
-        }
-
     override fun onExerciseClick(exercise: ExerciseModel) {
         app.exerciseFS.currentExercise = exercise
-        val launcherIntent = parcelizeExerciseIntent(this, ExerciseActivity(), "exercise", exercise)
-        getClickResult.launch(launcherIntent)
+        startActivity(parcelizeExerciseIntent(this, ExerciseActivity(), "exercise", exercise))
     }
 }
