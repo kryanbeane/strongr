@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Strongr"
         tools:targetApi="31">
         <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.login.TraineeDetailsActivity"
             android:exported="false" />
         <activity

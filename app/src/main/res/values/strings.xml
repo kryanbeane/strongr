@@ -73,6 +73,7 @@
     <string name="email_address">Email Address</string>
     <string name="height_cm">Height (cm)</string>
     <string name="submit">Submit</string>
+    <string name="my_workouts">My Workouts</string>
 
     <string-array name="activity_levels">
         <item>Sedentary</item>
