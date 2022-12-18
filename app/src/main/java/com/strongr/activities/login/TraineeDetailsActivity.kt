@@ -13,7 +13,11 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
 import com.strongr.R
+import com.strongr.activities.dashboard.DashboardActivity
 import com.strongr.activities.workouts.WorkoutListActivity
 import com.strongr.databinding.ActivityTraineeDetailsBinding
 import com.strongr.main.MainApp
@@ -58,11 +62,12 @@ class TraineeDetailsActivity : AppCompatActivity() {
             trainee.workoutsPerWeek = binding.editWorkoutsPerWeek.selectedItem.toString().toInt()
             trainee.activityLevel = binding.spinnerActivityLevel.selectedItem.toString()
             trainee.height = binding.editHeight.text.toString().toFloat()
+
             updateTrainee()
             app.traineeFS.currentTrainee = trainee
 
             finish()
-            startActivity(Intent(this, WorkoutListActivity::class.java))
+            startActivity(Intent(this, DashboardActivity::class.java))
         }
 
     }

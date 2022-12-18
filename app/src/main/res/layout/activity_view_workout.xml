@@ -25,7 +25,19 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleTextColor="@color/colorPrimary" />
+                app:titleTextColor="@color/colorPrimary" >
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:drawableLeft="@drawable/baseline_fitness_center_24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="  STRONGR"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp" />
+
+            </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
@@ -59,7 +71,6 @@
 
 
         </LinearLayout>
-
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"

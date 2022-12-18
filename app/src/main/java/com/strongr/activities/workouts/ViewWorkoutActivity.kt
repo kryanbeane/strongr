@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.strongr.R
+import com.strongr.activities.dashboard.DashboardActivity
 import com.strongr.activities.login.LoginActivity
 import com.strongr.activities.settings.SettingsActivity
 import com.strongr.activities.workouts.fragments.EditWorkoutFragment
@@ -26,6 +27,7 @@ import com.strongr.main.MainApp
 import com.strongr.models.exercise.ExerciseModel
 import com.strongr.models.workout.WorkoutModel
 import com.strongr.utils.RearrangeCardHelperExercise
+import com.strongr.utils.parcelizeExerciseIntent
 import com.strongr.utils.parcelizeWorkoutIntent
 import kotlinx.coroutines.runBlocking
 
@@ -40,9 +42,12 @@ class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
 
         app = application as MainApp
 
-        binding.toolbar.title = title
+        binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
-
+        binding.toolbarTitle.setOnClickListener {
+            finish()
+            startActivity(Intent(this, DashboardActivity::class.java))
+        }
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
@@ -93,26 +98,19 @@ class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
         app.traineeFS.currentTrainee.workouts.remove(app.workoutFS.currentWorkout.id)
     }
 
-
-
     fun launchExerciseActivity() {
         return getResult.launch(parcelizeWorkoutIntent(this, ExerciseActivity(), "workout", app.workoutFS.currentWorkout))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_workout, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.logout -> {
-                FirebaseAuth.getInstance().signOut()
+            R.id.return_button -> {
                 finish()
-                startActivity(Intent(this, LoginActivity::class.java))
-            }
-            R.id.settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -125,23 +123,14 @@ class ViewWorkoutActivity : AppCompatActivity(), ExerciseListener {
         startActivity(Intent(this, WorkoutListActivity::class.java))
     }
 
-    // TODO need to add this to the button that lets u add an exercise
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this, "${app.workoutFS.currentWorkout.exercises}", Toast.LENGTH_LONG).show()
             (binding.recyclerView.adapter)?.notifyItemRangeChanged(0, app.workoutFS.currentWorkout.exercises.size)
         }
     }
 
-    private val getClickResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0,app.workoutFS.currentWorkout.exercises.size)
-            }
-        }
-
     override fun onExerciseClick(exercise: ExerciseModel) {
         app.exerciseFS.currentExercise = exercise
-        val launcherIntent = Intent(this, ExerciseActivity::class.java)
-        getClickResult.launch(launcherIntent)
+        startActivity(parcelizeExerciseIntent(this, ExerciseActivity(), "exercise", exercise))
     }
 }

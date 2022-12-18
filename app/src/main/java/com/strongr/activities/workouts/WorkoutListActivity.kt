@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.strongr.R
+import com.strongr.activities.dashboard.DashboardActivity
 import com.strongr.activities.login.LoginActivity
 import com.strongr.activities.settings.SettingsActivity
 import com.strongr.activities.workouts.adapters.WorkoutAdapter
@@ -30,21 +31,14 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.bottomNavigationView.background = null
-        binding.bottomNavigationView.menu.getItem(2).isEnabled = false
 
         app = application as MainApp
-
-        binding.toolbar.title = title
+        binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
-
-        binding.fab.setOnClickListener {
-            getResult.launch(parcelizeWorkoutIntent(this, WorkoutActivity(), "workout", app.workoutFS.currentWorkout))
+        binding.toolbarTitle.setOnClickListener {
+            finish()
+            startActivity(Intent(this, DashboardActivity::class.java))
         }
-
-        binding.bottomNavigationView.selectedItemId = R.id.home
-
-        // TODO Add listeners to the bottom nav bar for app navigation
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
@@ -68,6 +62,9 @@ class WorkoutListActivity: AppCompatActivity(), WorkoutListener {
             }
             R.id.settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
+            }
+            R.id.workout_add -> {
+                getResult.launch(parcelizeWorkoutIntent(this, WorkoutActivity(), "workout", app.workoutFS.currentWorkout))
             }
         }
         return super.onOptionsItemSelected(item)

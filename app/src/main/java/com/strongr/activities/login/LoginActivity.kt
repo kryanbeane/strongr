@@ -12,7 +12,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -24,7 +23,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import com.strongr.R
-import com.strongr.activities.workouts.WorkoutListActivity
+import com.strongr.activities.dashboard.DashboardActivity
 import com.strongr.databinding.ActivityLoginBinding
 import com.strongr.main.MainApp
 import com.strongr.models.trainee.TraineeModel
@@ -43,12 +42,10 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var startForResult : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Initialize view
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Firebase stuff
         Firebase.initialize(this)
         auth = Firebase.auth
         db = Firebase.firestore
@@ -112,15 +109,12 @@ class LoginActivity: AppCompatActivity() {
                         startActivity(parcelizeTraineeIntent(this@LoginActivity, TraineeDetailsActivity(), "trainee", trainee))
                     }
 
-                } else {
-                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
     private fun createTrainee(traineeModel: TraineeModel) = runBlocking {
         app.traineeFS.create(traineeModel)
-
     }
 
     private fun configGoogleSignIn() {
@@ -142,16 +136,10 @@ class LoginActivity: AppCompatActivity() {
             val trainee = app.traineeFS.get(currentUser.uid)
             if (trainee != null) {
                 app.traineeFS.currentTrainee = trainee
-                Toast.makeText(baseContext, "Welcome back ${trainee.fullName}", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, WorkoutListActivity::class.java))
-                //startActivity(parcelizeIntent(this@LoginActivity, WorkoutListActivity(), "trainee", trainee))
+                startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
 
-            } else {
-                Toast.makeText(baseContext, "NOT welcome back ${currentUser.email}", Toast.LENGTH_SHORT).show()
             }
-        } else {
-            Toast.makeText(baseContext, "Login failed", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -160,11 +148,10 @@ class LoginActivity: AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { result ->
                 if (result.isSuccessful) {
-                    Toast.makeText(this@LoginActivity, "Welcome back $email!", Toast.LENGTH_SHORT).show()
                     val trainee = app.traineeFS.get(auth.currentUser!!.uid)
                     if (trainee != null) {
                         app.traineeFS.currentTrainee = trainee
-                        startActivity(parcelizeTraineeIntent(this, WorkoutListActivity(), "trainee", trainee))
+                        startActivity(parcelizeTraineeIntent(this, DashboardActivity(), "trainee", trainee))
                         finish()
                     }
                 }
@@ -180,7 +167,6 @@ class LoginActivity: AppCompatActivity() {
 
     private fun completeSignUpFlow(emailAddress: String, password: String) = runBlocking {
         val user = signUp(emailAddress, password).user
-        Toast.makeText(this@LoginActivity, "Welcome $user!", Toast.LENGTH_LONG).show()
 
         if (user != null) {
             val trainee = TraineeModel(emailAddress=emailAddress, id=user.uid)
